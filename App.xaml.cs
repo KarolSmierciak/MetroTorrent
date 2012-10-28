@@ -3,6 +3,7 @@
 namespace MetroTorrent
 {
     using System;
+    using MetroTorrent.Pages;
     using Windows.ApplicationModel;
     using Windows.ApplicationModel.Activation;
     using Windows.UI.Xaml;
@@ -46,7 +47,7 @@ namespace MetroTorrent
 
             // Create a Frame to act navigation context and navigate to the first page
             var rootFrame = new Frame();
-            if (!rootFrame.Navigate(typeof(MainPage)))
+            if (!rootFrame.Navigate(typeof(DownloadsPage)))
             {
                 throw new Exception("Failed to create initial page");
             }

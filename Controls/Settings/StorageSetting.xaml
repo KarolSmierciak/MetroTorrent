@@ -1,0 +1,26 @@
+﻿<UserControl
+    x:Class="MetroTorrent.Controls.Settings.StorageSetting"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MetroTorrent.Controls.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock HorizontalAlignment="Left" Margin="0,6,0,0" Grid.Column="0" Grid.Row="0" TextWrapping="Wrap" Text="Temporary files" VerticalAlignment="Top" FontSize="18"/>
+        <TextBox x:Name="tempFilesBox" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="32" Width="240"/>
+        <TextBlock HorizontalAlignment="Left" Margin="0,6,0,0" Grid.Row="1" Grid.Column="0" TextWrapping="Wrap" Text="Downloaded files" VerticalAlignment="Top" FontSize="18"/>
+        <TextBox x:Name="downloadedFilesBox" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Height="32" Width="240"/>
+    </Grid>
+</UserControl>
