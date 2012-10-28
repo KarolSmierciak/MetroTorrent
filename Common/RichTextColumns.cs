@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
-
-namespace MetroTorrent.Common
+﻿namespace MetroTorrent.Common
 {
+    using System;
+    using System.Collections.Generic;
+    using Windows.Foundation;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
+
     /// <summary>
     /// Wrapper for <see cref="RichTextBlock"/> that creates as many additional overflow
     /// columns as needed to fit the available content.
@@ -43,15 +39,21 @@ namespace MetroTorrent.Common
         /// Identifies the <see cref="RichTextContent"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty RichTextContentProperty =
-            DependencyProperty.Register("RichTextContent", typeof(RichTextBlock),
-            typeof(RichTextColumns), new PropertyMetadata(null, ResetOverflowLayout));
+            DependencyProperty.Register(
+            "RichTextContent", 
+            typeof(RichTextBlock),
+            typeof(RichTextColumns), 
+            new PropertyMetadata(null, ResetOverflowLayout));
 
         /// <summary>
         /// Identifies the <see cref="ColumnTemplate"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty ColumnTemplateProperty =
-            DependencyProperty.Register("ColumnTemplate", typeof(DataTemplate),
-            typeof(RichTextColumns), new PropertyMetadata(null, ResetOverflowLayout));
+            DependencyProperty.Register(
+            "ColumnTemplate", 
+            typeof(DataTemplate),
+            typeof(RichTextColumns), 
+            new PropertyMetadata(null, ResetOverflowLayout));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RichTextColumns"/> class.
@@ -67,7 +69,7 @@ namespace MetroTorrent.Common
         public RichTextBlock RichTextContent
         {
             get { return (RichTextBlock)GetValue(RichTextContentProperty); }
-            set { SetValue(RichTextContentProperty, value); }
+            set { this.SetValue(RichTextContentProperty, value); }
         }
 
         /// <summary>
@@ -77,7 +79,7 @@ namespace MetroTorrent.Common
         public DataTemplate ColumnTemplate
         {
             get { return (DataTemplate)GetValue(ColumnTemplateProperty); }
-            set { SetValue(ColumnTemplateProperty, value); }
+            set { this.SetValue(ColumnTemplateProperty, value); }
         }
 
         /// <summary>
@@ -114,7 +116,10 @@ namespace MetroTorrent.Common
         /// <returns>The resulting size of the original content plus any extra columns.</returns>
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (this.RichTextContent == null) return new Size(0, 0);
+            if (this.RichTextContent == null)
+            {
+                return new Size(0, 0);
+            }
 
             // Make sure the RichTextBlock is a child, using the lack of
             // a list of additional columns as a sign that this hasn't been
@@ -177,6 +182,7 @@ namespace MetroTorrent.Common
                 {
                     this._overflowColumns[overflowIndex - 1].OverflowContentTarget = null;
                 }
+
                 while (this._overflowColumns.Count > overflowIndex)
                 {
                     this._overflowColumns.RemoveAt(overflowIndex);
@@ -198,12 +204,13 @@ namespace MetroTorrent.Common
         {
             double maxWidth = 0;
             double maxHeight = 0;
-            foreach (var child in Children)
+            foreach (var child in this.Children)
             {
                 child.Arrange(new Rect(maxWidth, 0, child.DesiredSize.Width, finalSize.Height));
                 maxWidth += child.DesiredSize.Width;
                 maxHeight = Math.Max(maxHeight, child.DesiredSize.Height);
             }
+
             return new Size(maxWidth, maxHeight);
         }
     }

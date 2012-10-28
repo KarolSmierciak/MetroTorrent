@@ -1,33 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-
-namespace MetroTorrent.Common
+﻿namespace MetroTorrent.Common
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Runtime.Serialization;
+    using System.Threading.Tasks;
+    using Windows.Storage;
+    using Windows.Storage.Streams;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
+
     /// <summary>
     /// SuspensionManager captures global session state to simplify process lifetime management
     /// for an application.  Note that session state will be automatically cleared under a variety
     /// of conditions and should only be used to store information that would be convenient to
-    /// carry across sessions, but that should be disacarded when an application crashes or is
+    /// carry across sessions, but that should be discarded when an application crashes or is
     /// upgraded.
     /// </summary>
     internal sealed class SuspensionManager
     {
+        private const string SessionStateFilename = "_sessionState.xml";
+
         private static Dictionary<string, object> _sessionState = new Dictionary<string, object>();
+
         private static List<Type> _knownTypes = new List<Type>();
-        private const string sessionStateFilename = "_sessionState.xml";
 
         /// <summary>
-        /// Provides access to global session state for the current session.  This state is
+        /// Gets the global session state for the current session.  This state is
         /// serialized by <see cref="SaveAsync"/> and restored by
         /// <see cref="RestoreAsync"/>, so values must be serializable by
         /// <see cref="DataContractSerializer"/> and should be as compact as possible.  Strings
@@ -39,8 +38,8 @@ namespace MetroTorrent.Common
         }
 
         /// <summary>
-        /// List of custom types provided to the <see cref="DataContractSerializer"/> when
-        /// reading and writing session state.  Initially empty, additional types may be
+        /// Gets the list of custom types provided to the <see cref="DataContractSerializer"/>
+        /// when reading and writing session state.  Initially empty, additional types may be
         /// added to customize the serialization process.
         /// </summary>
         public static List<Type> KnownTypes
@@ -74,7 +73,7 @@ namespace MetroTorrent.Common
             serializer.WriteObject(sessionData, _sessionState);
 
             // Get an output stream for the SessionState file and write the state asynchronously
-            StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(sessionStateFilename, CreationCollisionOption.ReplaceExisting);
+            StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(SessionStateFilename, CreationCollisionOption.ReplaceExisting);
             using (Stream fileStream = await file.OpenStreamForWriteAsync())
             {
                 sessionData.Seek(0, SeekOrigin.Begin);
@@ -94,10 +93,10 @@ namespace MetroTorrent.Common
         /// completes.</returns>
         public static async Task RestoreAsync()
         {
-            _sessionState = new Dictionary<String, Object>();
+            _sessionState = new Dictionary<string, object>();
 
             // Get the input stream for the SessionState file
-            StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync(sessionStateFilename);
+            StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync(SessionStateFilename);
             using (IInputStream inStream = await file.OpenSequentialReadAsync())
             {
                 // Deserialize the Session State
@@ -111,16 +110,18 @@ namespace MetroTorrent.Common
                 Frame frame;
                 if (weakFrameReference.TryGetTarget(out frame))
                 {
-                    frame.ClearValue(FrameSessionStateProperty);
+                    frame.ClearValue(frameSessionStateProperty);
                     RestoreFrameNavigationState(frame);
                 }
             }
         }
 
-        private static DependencyProperty FrameSessionStateKeyProperty =
-            DependencyProperty.RegisterAttached("_FrameSessionStateKey", typeof(String), typeof(SuspensionManager), null);
-        private static DependencyProperty FrameSessionStateProperty =
-            DependencyProperty.RegisterAttached("_FrameSessionState", typeof(Dictionary<String, Object>), typeof(SuspensionManager), null);
+        private static DependencyProperty frameSessionStateKeyProperty =
+            DependencyProperty.RegisterAttached("_FrameSessionStateKey", typeof(string), typeof(SuspensionManager), null);
+
+        private static DependencyProperty frameSessionStateProperty =
+            DependencyProperty.RegisterAttached("_FrameSessionState", typeof(Dictionary<string, object>), typeof(SuspensionManager), null);
+
         private static List<WeakReference<Frame>> _registeredFrames = new List<WeakReference<Frame>>();
 
         /// <summary>
@@ -135,21 +136,21 @@ namespace MetroTorrent.Common
         /// <see cref="SuspensionManager"/></param>
         /// <param name="sessionStateKey">A unique key into <see cref="SessionState"/> used to
         /// store navigation-related information.</param>
-        public static void RegisterFrame(Frame frame, String sessionStateKey)
+        public static void RegisterFrame(Frame frame, string sessionStateKey)
         {
-            if (frame.GetValue(FrameSessionStateKeyProperty) != null)
+            if (frame.GetValue(frameSessionStateKeyProperty) != null)
             {
                 throw new InvalidOperationException("Frames can only be registered to one session state key");
             }
 
-            if (frame.GetValue(FrameSessionStateProperty) != null)
+            if (frame.GetValue(frameSessionStateProperty) != null)
             {
                 throw new InvalidOperationException("Frames must be either be registered before accessing frame session state, or not registered at all");
             }
 
             // Use a dependency property to associate the session key with a frame, and keep a list of frames whose
             // navigation state should be managed
-            frame.SetValue(FrameSessionStateKeyProperty, sessionStateKey);
+            frame.SetValue(frameSessionStateKeyProperty, sessionStateKey);
             _registeredFrames.Add(new WeakReference<Frame>(frame));
 
             // Check to see if navigation state can be restored
@@ -167,7 +168,7 @@ namespace MetroTorrent.Common
         {
             // Remove session state and remove the frame from the list of frames whose navigation
             // state will be saved (along with any weak references that are no longer reachable)
-            SessionState.Remove((String)frame.GetValue(FrameSessionStateKeyProperty));
+            SessionState.Remove((string)frame.GetValue(frameSessionStateKeyProperty));
             _registeredFrames.RemoveAll((weakFrameReference) =>
             {
                 Frame testFrame;
@@ -188,29 +189,32 @@ namespace MetroTorrent.Common
         /// <param name="frame">The instance for which session state is desired.</param>
         /// <returns>A collection of state subject to the same serialization mechanism as
         /// <see cref="SessionState"/>.</returns>
-        public static Dictionary<String, Object> SessionStateForFrame(Frame frame)
+        public static Dictionary<string, object> SessionStateForFrame(Frame frame)
         {
-            var frameState = (Dictionary<String, Object>)frame.GetValue(FrameSessionStateProperty);
+            var frameState = (Dictionary<string, object>)frame.GetValue(frameSessionStateProperty);
 
             if (frameState == null)
             {
-                var frameSessionKey = (String)frame.GetValue(FrameSessionStateKeyProperty);
+                var frameSessionKey = (string)frame.GetValue(frameSessionStateKeyProperty);
                 if (frameSessionKey != null)
                 {
                     // Registered frames reflect the corresponding session state
                     if (!_sessionState.ContainsKey(frameSessionKey))
                     {
-                        _sessionState[frameSessionKey] = new Dictionary<String, Object>();
+                        _sessionState[frameSessionKey] = new Dictionary<string, object>();
                     }
-                    frameState = (Dictionary<String, Object>)_sessionState[frameSessionKey];
+
+                    frameState = (Dictionary<string, object>)_sessionState[frameSessionKey];
                 }
                 else
                 {
                     // Frames that aren't registered have transient state
-                    frameState = new Dictionary<String, Object>();
+                    frameState = new Dictionary<string, object>();
                 }
-                frame.SetValue(FrameSessionStateProperty, frameState);
+
+                frame.SetValue(frameSessionStateProperty, frameState);
             }
+
             return frameState;
         }
 
@@ -219,7 +223,7 @@ namespace MetroTorrent.Common
             var frameState = SessionStateForFrame(frame);
             if (frameState.ContainsKey("Navigation"))
             {
-                frame.SetNavigationState((String)frameState["Navigation"]);
+                frame.SetNavigationState((string)frameState["Navigation"]);
             }
         }
 

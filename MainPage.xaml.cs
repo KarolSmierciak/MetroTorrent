@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Split Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234234
+﻿// The Split Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234234
 
 namespace MetroTorrent
 {
+    using System;
+    using System.Collections.Generic;
+    using Windows.UI.ViewManagement;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
+
     /// <summary>
     /// A page that displays a group title, a list of items within the group, and details for
     /// the currently selected item.
@@ -39,10 +30,10 @@ namespace MetroTorrent
         /// </param>
         /// <param name="pageState">A dictionary of state preserved by this page during an earlier
         /// session.  This will be null the first time a page is visited.</param>
-        protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
+        protected override void LoadState(object navigationParameter, Dictionary<string, object> pageState)
         {
-            // TODO: Assign a bindable group to this.DefaultViewModel["Group"]
-            // TODO: Assign a collection of bindable items to this.DefaultViewModel["Items"]
+            //// TODO: Assign a bindable group to this.DefaultViewModel["Group"]
+            //// TODO: Assign a collection of bindable items to this.DefaultViewModel["Items"]
 
             if (pageState == null)
             {
@@ -70,13 +61,13 @@ namespace MetroTorrent
         /// requirements of <see cref="SuspensionManager.SessionState"/>.
         /// </summary>
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
-        protected override void SaveState(Dictionary<String, Object> pageState)
+        protected override void SaveState(Dictionary<string, object> pageState)
         {
             if (this.itemsViewSource.View != null)
             {
                 var selectedItem = this.itemsViewSource.View.CurrentItem;
-                // TODO: Derive a serializable navigation parameter and assign it to
-                //       pageState["SelectedItem"]
+                //// TODO: Derive a serializable navigation parameter and assign it to
+                ////       pageState["SelectedItem"]
             }
         }
 
@@ -92,37 +83,6 @@ namespace MetroTorrent
         // This is all implemented with a single physical page that can represent two logical
         // pages.  The code below achieves this goal without making the user aware of the
         // distinction.
-
-        /// <summary>
-        /// Invoked to determine whether the page should act as one logical page or two.
-        /// </summary>
-        /// <param name="viewState">The view state for which the question is being posed, or null
-        /// for the current view state.  This parameter is optional with null as the default
-        /// value.</param>
-        /// <returns>True when the view state in question is portrait or snapped, false
-        /// otherwise.</returns>
-        private bool UsingLogicalPageNavigation(ApplicationViewState? viewState = null)
-        {
-            if (viewState == null) viewState = ApplicationView.Value;
-            return viewState == ApplicationViewState.FullScreenPortrait ||
-                viewState == ApplicationViewState.Snapped;
-        }
-
-        /// <summary>
-        /// Invoked when an item within the list is selected.
-        /// </summary>
-        /// <param name="sender">The GridView (or ListView when the application is Snapped)
-        /// displaying the selected item.</param>
-        /// <param name="e">Event data that describes how the selection was changed.</param>
-        void ItemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Invalidate the view state when logical page navigation is in effect, as a change
-            // in selection may cause a corresponding change in the current logical page.  When
-            // an item is selected this has the effect of changing from displaying the item list
-            // to showing the selected item's details.  When the selection is cleared this has the
-            // opposite effect.
-            if (this.UsingLogicalPageNavigation()) this.InvalidateVisualState();
-        }
 
         /// <summary>
         /// Invoked when the page's back button is pressed.
@@ -170,7 +130,11 @@ namespace MetroTorrent
                 viewState == ApplicationViewState.FullScreenLandscape)
             {
                 var windowWidth = Window.Current.Bounds.Width;
-                if (windowWidth >= 1366) return "FullScreenLandscapeOrWide";
+                if (windowWidth >= 1366)
+                {
+                    return "FullScreenLandscapeOrWide";
+                }
+
                 return "FilledOrNarrow";
             }
 
@@ -178,6 +142,44 @@ namespace MetroTorrent
             // suffix when viewing details instead of the list
             var defaultStateName = base.DetermineVisualState(viewState);
             return logicalPageBack ? defaultStateName + "_Detail" : defaultStateName;
+        }
+
+        /// <summary>
+        /// Invoked to determine whether the page should act as one logical page or two.
+        /// </summary>
+        /// <param name="viewState">The view state for which the question is being posed, or null
+        /// for the current view state.  This parameter is optional with null as the default
+        /// value.</param>
+        /// <returns>True when the view state in question is portrait or snapped, false
+        /// otherwise.</returns>
+        private bool UsingLogicalPageNavigation(ApplicationViewState? viewState = null)
+        {
+            if (viewState == null)
+            {
+                viewState = ApplicationView.Value;
+            }
+
+            return viewState == ApplicationViewState.FullScreenPortrait ||
+                viewState == ApplicationViewState.Snapped;
+        }
+
+        /// <summary>
+        /// Invoked when an item within the list is selected.
+        /// </summary>
+        /// <param name="sender">The GridView (or ListView when the application is Snapped)
+        /// displaying the selected item.</param>
+        /// <param name="e">Event data that describes how the selection was changed.</param>
+        private void ItemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Invalidate the view state when logical page navigation is in effect, as a change
+            // in selection may cause a corresponding change in the current logical page.  When
+            // an item is selected this has the effect of changing from displaying the item list
+            // to showing the selected item's details.  When the selection is cleared this has the
+            // opposite effect.
+            if (this.UsingLogicalPageNavigation())
+            {
+                this.InvalidateVisualState();
+            }
         }
 
         #endregion

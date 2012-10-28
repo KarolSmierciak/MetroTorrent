@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.System;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
-
-namespace MetroTorrent.Common
+﻿namespace MetroTorrent.Common
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Windows.Foundation.Collections;
+    using Windows.System;
+    using Windows.UI.Core;
+    using Windows.UI.ViewManagement;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
+    using Windows.UI.Xaml.Navigation;
+
     /// <summary>
     /// Typical implementation of Page that provides several important conveniences:
     /// <list type="bullet">
@@ -40,8 +38,11 @@ namespace MetroTorrent.Common
         /// Identifies the <see cref="DefaultViewModel"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty DefaultViewModelProperty =
-            DependencyProperty.Register("DefaultViewModel", typeof(IObservableMap<String, Object>),
-            typeof(LayoutAwarePage), null);
+            DependencyProperty.Register(
+            "DefaultViewModel", 
+            typeof(IObservableMap<string, object>),
+            typeof(LayoutAwarePage),
+            null);
 
         private List<Control> _layoutAwareControls;
 
@@ -50,10 +51,13 @@ namespace MetroTorrent.Common
         /// </summary>
         public LayoutAwarePage()
         {
-            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled) return;
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
+                return;
+            }
 
             // Create an empty default view model
-            this.DefaultViewModel = new ObservableDictionary<String, Object>();
+            this.DefaultViewModel = new ObservableDictionary<string, object>();
 
             // When this page is part of the visual tree make two changes:
             // 1) Map application view state to visual state for the page
@@ -86,14 +90,14 @@ namespace MetroTorrent.Common
         }
 
         /// <summary>
-        /// An implementation of <see cref="IObservableMap&lt;String, Object&gt;"/> designed to be
+        /// Gets an implementation of <see cref="IObservableMap&lt;string, object&gt;"/> designed to be
         /// used as a trivial view model.
         /// </summary>
-        protected IObservableMap<String, Object> DefaultViewModel
+        protected IObservableMap<string, object> DefaultViewModel
         {
             get
             {
-                return this.GetValue(DefaultViewModelProperty) as IObservableMap<String, Object>;
+                return this.GetValue(DefaultViewModelProperty) as IObservableMap<string, object>;
             }
 
             set
@@ -115,7 +119,10 @@ namespace MetroTorrent.Common
             // Use the navigation frame to return to the topmost page
             if (this.Frame != null)
             {
-                while (this.Frame.CanGoBack) this.Frame.GoBack();
+                while (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
             }
         }
 
@@ -129,7 +136,10 @@ namespace MetroTorrent.Common
         protected virtual void GoBack(object sender, RoutedEventArgs e)
         {
             // Use the navigation frame to return to the previous page
-            if (this.Frame != null && this.Frame.CanGoBack) this.Frame.GoBack();
+            if (this.Frame != null && this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
         }
 
         /// <summary>
@@ -142,7 +152,10 @@ namespace MetroTorrent.Common
         protected virtual void GoForward(object sender, RoutedEventArgs e)
         {
             // Use the navigation frame to move to the next page
-            if (this.Frame != null && this.Frame.CanGoForward) this.Frame.GoForward();
+            if (this.Frame != null && this.Frame.CanGoForward)
+            {
+                this.Frame.GoForward();
+            }
         }
 
         /// <summary>
@@ -152,8 +165,7 @@ namespace MetroTorrent.Common
         /// </summary>
         /// <param name="sender">Instance that triggered the event.</param>
         /// <param name="args">Event data describing the conditions that led to the event.</param>
-        private void CoreDispatcher_AcceleratorKeyActivated(CoreDispatcher sender,
-            AcceleratorKeyEventArgs args)
+        private void CoreDispatcher_AcceleratorKeyActivated(CoreDispatcher sender, AcceleratorKeyEventArgs args)
         {
             var virtualKey = args.VirtualKey;
 
@@ -196,14 +208,16 @@ namespace MetroTorrent.Common
         /// </summary>
         /// <param name="sender">Instance that triggered the event.</param>
         /// <param name="args">Event data describing the conditions that led to the event.</param>
-        private void CoreWindow_PointerPressed(CoreWindow sender,
-            PointerEventArgs args)
+        private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs args)
         {
             var properties = args.CurrentPoint.Properties;
 
             // Ignore button chords with the left, right, and middle buttons
             if (properties.IsLeftButtonPressed || properties.IsRightButtonPressed ||
-                properties.IsMiddleButtonPressed) return;
+                properties.IsMiddleButtonPressed)
+            {
+                return;
+            }
 
             // If back or foward are pressed (but not both) navigate appropriately
             bool backPressed = properties.IsXButton1Pressed;
@@ -211,8 +225,15 @@ namespace MetroTorrent.Common
             if (backPressed ^ forwardPressed)
             {
                 args.Handled = true;
-                if (backPressed) this.GoBack(this, new RoutedEventArgs());
-                if (forwardPressed) this.GoForward(this, new RoutedEventArgs());
+                if (backPressed)
+                {
+                    this.GoBack(this, new RoutedEventArgs());
+                }
+
+                if (forwardPressed)
+                {
+                    this.GoForward(this, new RoutedEventArgs());
+                }
             }
         }
 
@@ -240,17 +261,22 @@ namespace MetroTorrent.Common
         public void StartLayoutUpdates(object sender, RoutedEventArgs e)
         {
             var control = sender as Control;
-            if (control == null) return;
+            if (control == null)
+            {
+                return;
+            }
+
             if (this._layoutAwareControls == null)
             {
                 // Start listening to view state changes when there are controls interested in updates
                 Window.Current.SizeChanged += this.WindowSizeChanged;
                 this._layoutAwareControls = new List<Control>();
             }
+
             this._layoutAwareControls.Add(control);
 
             // Set the initial visual state of the control
-            VisualStateManager.GoToState(control, DetermineVisualState(ApplicationView.Value), false);
+            VisualStateManager.GoToState(control, this.DetermineVisualState(ApplicationView.Value), false);
         }
 
         private void WindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
@@ -272,7 +298,11 @@ namespace MetroTorrent.Common
         public void StopLayoutUpdates(object sender, RoutedEventArgs e)
         {
             var control = sender as Control;
-            if (control == null || this._layoutAwareControls == null) return;
+            if (control == null || this._layoutAwareControls == null)
+            {
+                return;
+            }
+
             this._layoutAwareControls.Remove(control);
             if (this._layoutAwareControls.Count == 0)
             {
@@ -309,7 +339,7 @@ namespace MetroTorrent.Common
         {
             if (this._layoutAwareControls != null)
             {
-                string visualState = DetermineVisualState(ApplicationView.Value);
+                string visualState = this.DetermineVisualState(ApplicationView.Value);
                 foreach (var layoutAwareControl in this._layoutAwareControls)
                 {
                     VisualStateManager.GoToState(layoutAwareControl, visualState, false);
@@ -321,7 +351,7 @@ namespace MetroTorrent.Common
 
         #region Process lifetime management
 
-        private String _pageKey;
+        private string _pageKey;
 
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
@@ -331,7 +361,10 @@ namespace MetroTorrent.Common
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             // Returning to a cached page through navigation shouldn't trigger state loading
-            if (this._pageKey != null) return;
+            if (this._pageKey != null)
+            {
+                return;
+            }
 
             var frameState = SuspensionManager.SessionStateForFrame(this.Frame);
             this._pageKey = "Page-" + this.Frame.BackStackDepth;
@@ -356,7 +389,7 @@ namespace MetroTorrent.Common
                 // Pass the navigation parameter and preserved page state to the page, using
                 // the same strategy for loading suspended state and recreating pages discarded
                 // from cache
-                this.LoadState(e.Parameter, (Dictionary<String, Object>)frameState[this._pageKey]);
+                this.LoadState(e.Parameter, (Dictionary<string, object>)frameState[this._pageKey]);
             }
         }
 
@@ -368,9 +401,9 @@ namespace MetroTorrent.Common
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             var frameState = SuspensionManager.SessionStateForFrame(this.Frame);
-            var pageState = new Dictionary<String, Object>();
+            var pageState = new Dictionary<string, object>();
             this.SaveState(pageState);
-            frameState[_pageKey] = pageState;
+            frameState[this._pageKey] = pageState;
         }
 
         /// <summary>
@@ -382,7 +415,7 @@ namespace MetroTorrent.Common
         /// </param>
         /// <param name="pageState">A dictionary of state preserved by this page during an earlier
         /// session.  This will be null the first time a page is visited.</param>
-        protected virtual void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
+        protected virtual void LoadState(object navigationParameter, Dictionary<string, object> pageState)
         {
         }
 
@@ -392,7 +425,7 @@ namespace MetroTorrent.Common
         /// requirements of <see cref="SuspensionManager.SessionState"/>.
         /// </summary>
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
-        protected virtual void SaveState(Dictionary<String, Object> pageState)
+        protected virtual void SaveState(Dictionary<string, object> pageState)
         {
         }
 
@@ -402,6 +435,8 @@ namespace MetroTorrent.Common
         /// Implementation of IObservableMap that supports reentrancy for use as a default view
         /// model.
         /// </summary>
+        /// <typeparam name="K">IObservableMap key</typeparam>
+        /// <typeparam name="V">IOBservableMap value</typeparam>
         private class ObservableDictionary<K, V> : IObservableMap<K, V>
         {
             private class ObservableDictionaryChangedEventArgs : IMapChangedEventArgs<K>
@@ -413,15 +448,17 @@ namespace MetroTorrent.Common
                 }
 
                 public CollectionChange CollectionChange { get; private set; }
+
                 public K Key { get; private set; }
             }
 
             private Dictionary<K, V> _dictionary = new Dictionary<K, V>();
+
             public event MapChangedEventHandler<K, V> MapChanged;
 
             private void InvokeMapChanged(CollectionChange change, K key)
             {
-                var eventHandler = MapChanged;
+                var eventHandler = this.MapChanged;
                 if (eventHandler != null)
                 {
                     eventHandler(this, new ObservableDictionaryChangedEventArgs(CollectionChange.ItemInserted, key));
@@ -446,6 +483,7 @@ namespace MetroTorrent.Common
                     this.InvokeMapChanged(CollectionChange.ItemRemoved, key);
                     return true;
                 }
+
                 return false;
             }
 
@@ -453,11 +491,12 @@ namespace MetroTorrent.Common
             {
                 V currentValue;
                 if (this._dictionary.TryGetValue(item.Key, out currentValue) &&
-                    Object.Equals(item.Value, currentValue) && this._dictionary.Remove(item.Key))
+                    object.Equals(item.Value, currentValue) && this._dictionary.Remove(item.Key))
                 {
                     this.InvokeMapChanged(CollectionChange.ItemRemoved, item.Key);
                     return true;
                 }
+
                 return false;
             }
 
@@ -467,6 +506,7 @@ namespace MetroTorrent.Common
                 {
                     return this._dictionary[key];
                 }
+
                 set
                 {
                     this._dictionary[key] = value;
@@ -534,7 +574,11 @@ namespace MetroTorrent.Common
                 int arraySize = array.Length;
                 foreach (var pair in this._dictionary)
                 {
-                    if (arrayIndex >= arraySize) break;
+                    if (arrayIndex >= arraySize)
+                    {
+                        break;
+                    }
+
                     array[arrayIndex++] = pair;
                 }
             }
