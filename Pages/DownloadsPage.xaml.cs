@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MetroTorrent.Settings;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ApplicationSettings;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -21,10 +25,91 @@ namespace MetroTorrent.Pages
     /// </summary>
     public sealed partial class DownloadsPage : MetroTorrent.Common.LayoutAwarePage
     {
+
+        private Popup generalSettingsPopup = null;
+        private Popup connectionSettingsPopup = null;
+
+        // Desired width for the settings UI. UI guidelines specify this should be 346 or 646 depending on your needs.
+        private const int settingsWidth = 646;
+
         public DownloadsPage()
         {
             this.InitializeComponent();
-            ldownloads.Items.Add(new string[] { "asdf", "asdf" });
+            SettingsPane.GetForCurrentView().CommandsRequested += onCommandsRequested;
+        }
+
+        private void onGeneralSettingsCommand(IUICommand command)
+        {
+            SettingsCommand settingsCommand = (SettingsCommand)command;
+            if (generalSettingsPopup == null)
+            {
+                generalSettingsPopup = new Popup();
+
+                generalSettingsPopup.IsLightDismissEnabled = true;
+                generalSettingsPopup.Width = settingsWidth;
+                generalSettingsPopup.Height = Window.Current.Bounds.Height;
+
+                generalSettingsPopup.ChildTransitions = new TransitionCollection();
+                generalSettingsPopup.ChildTransitions.Add(new PaneThemeTransition()
+                {
+                    Edge = (SettingsPane.Edge == SettingsEdgeLocation.Right) ?
+                           EdgeTransitionLocation.Right :
+                           EdgeTransitionLocation.Left
+                });
+
+                GeneralSettings mypane = new GeneralSettings();
+                mypane.Width = settingsWidth;
+                mypane.Height = Window.Current.Bounds.Height;
+
+                generalSettingsPopup.Child = mypane;
+
+                generalSettingsPopup.SetValue(Canvas.LeftProperty, SettingsPane.Edge == SettingsEdgeLocation.Right ? (Window.Current.Bounds.Width - settingsWidth) : 0);
+                generalSettingsPopup.SetValue(Canvas.TopProperty, 0);
+            }
+            generalSettingsPopup.IsOpen = true;
+        }
+
+        private void onConnectionSettingsCommand(IUICommand command)
+        {
+            SettingsCommand settingsCommand = (SettingsCommand)command;
+            if (connectionSettingsPopup == null)
+            {
+                connectionSettingsPopup = new Popup();
+
+                connectionSettingsPopup.IsLightDismissEnabled = true;
+                connectionSettingsPopup.Width = settingsWidth;
+                connectionSettingsPopup.Height = Window.Current.Bounds.Height;
+
+                connectionSettingsPopup.ChildTransitions = new TransitionCollection();
+                connectionSettingsPopup.ChildTransitions.Add(new PaneThemeTransition()
+                {
+                    Edge = (SettingsPane.Edge == SettingsEdgeLocation.Right) ?
+                           EdgeTransitionLocation.Right :
+                           EdgeTransitionLocation.Left
+                });
+
+                ConnectionSettings mypane = new ConnectionSettings();
+                mypane.Width = settingsWidth;
+                mypane.Height = Window.Current.Bounds.Height;
+
+                connectionSettingsPopup.Child = mypane;
+
+                connectionSettingsPopup.SetValue(Canvas.LeftProperty, SettingsPane.Edge == SettingsEdgeLocation.Right ? (Window.Current.Bounds.Width - settingsWidth) : 0);
+                connectionSettingsPopup.SetValue(Canvas.TopProperty, 0);
+            }
+            connectionSettingsPopup.IsOpen = true;
+        }
+
+        private void onCommandsRequested(SettingsPane settingsPane, SettingsPaneCommandsRequestedEventArgs eventArgs)
+        {
+            UICommandInvokedHandler generalHandler = new UICommandInvokedHandler(onGeneralSettingsCommand);
+            UICommandInvokedHandler connectionHandler = new UICommandInvokedHandler(onConnectionSettingsCommand);
+
+            SettingsCommand generalCommand = new SettingsCommand("generalSettingsId", "General", generalHandler);
+            eventArgs.Request.ApplicationCommands.Add(generalCommand);
+
+            SettingsCommand connectionCommand = new SettingsCommand("connectionSettingsId", "Connection", connectionHandler);
+            eventArgs.Request.ApplicationCommands.Add(connectionCommand);
         }
 
         /// <summary>
@@ -48,14 +133,6 @@ namespace MetroTorrent.Pages
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
-        }
-
-        private void bsettings_Click(object sender, RoutedEventArgs e)
-        {
-            if (!this.Frame.Navigate(typeof(SettingsPage)))
-            {
-                throw new Exception("Failed to navigate to settings page");
-            }
         }
     }
 }

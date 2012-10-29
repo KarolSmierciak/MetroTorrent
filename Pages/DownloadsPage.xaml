@@ -18,7 +18,7 @@
                     <ColumnDefinition Width="50*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <Button x:Name="bsettings" Style="{StaticResource SettingsAppBarButtonStyle}" Tag="Settings" Click="bsettings_Click"/>
+                    
                 </StackPanel>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
                     <Button x:Name="bremove" Style="{StaticResource RemoveAppBarButtonStyle}" Tag="Remove entry"/>
@@ -54,7 +54,6 @@
             <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
             <TextBlock x:Name="pageTitle" Grid.Column="1" Style="{StaticResource PageHeaderTextStyle}" Text="All downloads"/>
         </Grid>
-        <ListView x:Name="ldownloads" HorizontalAlignment="Left" Height="196" Margin="78,124,0,0" Grid.Row="1" VerticalAlignment="Top" Width="506"/>
 
         <VisualStateManager.VisualStateGroups>
 
