@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MetroTorrent.Common;
+using MetroTorrent.DataStorage;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.ApplicationSettings;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -28,15 +30,6 @@ namespace MetroTorrent.Settings
             this.InitializeComponent();
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.  The Parameter
-        /// property is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-        }
-
         private void SettingsBackClicked(object sender, RoutedEventArgs e)
         {
             // First close our Flyout.
@@ -51,6 +44,21 @@ namespace MetroTorrent.Settings
             {
                 SettingsPane.Show();
             }
+        }
+
+        private void LayoutAwarePage_Unloaded_1(object sender, RoutedEventArgs e)
+        {
+            ConfigData.TempFilePath = this.tempFilePathBox.Text;
+            ConfigData.DownFilePath = this.downFilePathBox.Text;
+            ConfigData.RunWithOS = this.startWithWindowsToggle.IsOn;
+            ConfigData.Save();
+        }
+
+        private void LayoutAwarePage_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            this.tempFilePathBox.Text = ConfigData.TempFilePath;
+            this.downFilePathBox.Text = ConfigData.DownFilePath;
+            this.startWithWindowsToggle.IsOn = ConfigData.RunWithOS;
         }
     }
 }

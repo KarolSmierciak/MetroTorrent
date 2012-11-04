@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MetroTorrent.DataStorage;
 using MetroTorrent.Settings;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -133,6 +134,11 @@ namespace MetroTorrent.Pages
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
+        }
+
+        private void pageRoot_Loaded(object sender, RoutedEventArgs e)
+        {
+            ConfigData.Load();
         }
     }
 }

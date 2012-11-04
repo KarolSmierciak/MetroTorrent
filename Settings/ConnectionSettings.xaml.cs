@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MetroTorrent.DataStorage;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.ApplicationSettings;
@@ -50,6 +51,34 @@ namespace MetroTorrent.Settings
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+        }
+
+        private void LayoutAwarePage_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            this.upSpeedBox.Text = ConfigData.MaxUploadSpeed.ToString();
+            this.downSpeedBox.Text = ConfigData.MaxDownloadSpeed.ToString();
+        }
+
+        private void downSpeedBox_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ConfigData.MaxUploadSpeed = int.Parse(this.upSpeedBox.Text);
+            }
+            catch
+            {
+                if (this.upSpeedBox.Text.Length == 0)
+                    ConfigData.MaxUploadSpeed = 0;
+            }
+            try
+            {
+                ConfigData.MaxDownloadSpeed = int.Parse(this.downSpeedBox.Text);
+            }
+            catch
+            {
+                if (this.downSpeedBox.Text.Length == 0)
+                    ConfigData.MaxDownloadSpeed = 0;
+            }
         }
     }
 }

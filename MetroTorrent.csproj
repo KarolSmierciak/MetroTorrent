@@ -115,6 +115,7 @@
     <Compile Include="Common\LayoutAwarePage.cs" />
     <Compile Include="Common\RichTextColumns.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="DataStorage\ConfigData.cs" />
     <Compile Include="Pages\DownloadsPage.xaml.cs">
       <DependentUpon>DownloadsPage.xaml</DependentUpon>
     </Compile>

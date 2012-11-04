@@ -2,13 +2,12 @@
     x:Class="MetroTorrent.Settings.GeneralSettings"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ApplicationSettings"
     xmlns:common="using:MetroTorrent.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="768"
-    d:DesignWidth="646">
+    d:DesignWidth="646" Unloaded="LayoutAwarePage_Unloaded_1" Loaded="LayoutAwarePage_Loaded_1">
 
     <UserControl.Resources>
         <Style x:Key="SettingsBackButtonStyle" TargetType="Button">
@@ -135,7 +134,7 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
                 <StackPanel Orientation="Vertical" Margin="40,33,40,39">
                     <TextBlock Text="Application"  Margin="0,0,0,20" Style="{StaticResource SettingsSubheaderTextStyle}" />
-                    <ToggleSwitch Header="Start MetroTorrent with Windows" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
+                    <ToggleSwitch x:Name="startWithWindowsToggle" Header="Start MetroTorrent with Windows" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
                     <TextBlock Text="Paths" Style="{StaticResource SettingsSubheaderTextStyle}"/>
                     <TextBlock Text="Temporary files folder" Style="{StaticResource BasicTextStyle}" />
                     <StackPanel Margin="0, 7, 0, 0" Orientation="Horizontal">
