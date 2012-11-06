@@ -136,11 +136,20 @@ namespace MetroTorrent.Pages
         {
         }
 
+        private static bool firststart = true;
+        private static Object firststartlock = new Object();
         private void pageRoot_Loaded(object sender, RoutedEventArgs e)
         {
             ConfigData.Instance.OnConfigurationError += ErrorOccured;
             ConfigData.Instance.OnFirstRun += FirstRunHanlder;
-            ConfigData.Instance.Load();
+            lock (firststartlock)
+            {
+                if (firststart)
+                {
+                    firststart = false;
+                    ConfigData.Instance.Load();
+                }
+            }
         }
 
         private async void ErrorOccured(string str)

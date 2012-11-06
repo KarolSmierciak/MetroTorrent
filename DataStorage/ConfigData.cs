@@ -6,19 +6,23 @@ using System.Threading.Tasks;
 using System.IO;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
+using System.Threading;
 
 namespace MetroTorrent.DataStorage
 {
     public class ConfigData
     {
         private static ConfigData _instance = null;
+        private static Mutex instanceLock = new Mutex();
 
         public static ConfigData Instance
         {
             get
             {
+                instanceLock.WaitOne();
                 if (_instance == null)
                     _instance = new ConfigData();
+                instanceLock.ReleaseMutex();
                 return _instance;
             }
         }
@@ -31,6 +35,7 @@ namespace MetroTorrent.DataStorage
 
         public delegate void ConfigurationErrorDelegate(string str);
         public event ConfigurationErrorDelegate OnConfigurationError;
+        private bool loaded = false;
 
         private const string filename = "metroconfig.dat";
 
@@ -45,12 +50,22 @@ namespace MetroTorrent.DataStorage
 
         public async void Load()
         {
+            instanceLock.WaitOne();
+            if (loaded)
+            {
+                instanceLock.ReleaseMutex();
+                return;
+            }
+            instanceLock.ReleaseMutex();
             instance = new UserSettings();
             try
             {
                 StorageFile file = await storageFolder.GetFileAsync(filename);
                 string text = await FileIO.ReadTextAsync(file);
                 instance.TryParse(text);
+                instanceLock.WaitOne();
+                loaded = true;
+                instanceLock.ReleaseMutex();
                 //Stream s = file.OpenStreamForReadAsync().Result;
                 //XmlSerializer deserializer = new XmlSerializer(typeof(List<UserSettings>));
                 //List<UserSettings> us = (List<UserSettings>)deserializer.Deserialize(s);
