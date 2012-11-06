@@ -138,13 +138,13 @@
                     <TextBlock Text="Paths" Style="{StaticResource SettingsSubheaderTextStyle}"/>
                     <TextBlock Text="Temporary files folder" Style="{StaticResource BasicTextStyle}" />
                     <StackPanel Margin="0, 7, 0, 0" Orientation="Horizontal">
-                        <TextBox x:Name="tempFilePathBox" HorizontalAlignment="Left" Width="360"/>
-                        <Button Margin="20,0, 0, 0" Content="Browse"/>
+                        <TextBox x:Name="tempFilePathBox" HorizontalAlignment="Left" Width="360" IsReadOnly="True"/>
+                        <Button Content="Choose folder" Margin="20,0,0,0"  Click="Button_Click_1" />
                     </StackPanel>
                     <TextBlock Text="Downloaded files folder" Margin="0,10,0,0" Style="{StaticResource BasicTextStyle}" />
                     <StackPanel Margin="0, 7, 0, 0" Orientation="Horizontal">
-                        <TextBox HorizontalAlignment="Left" Width="360" x:Name="downFilePathBox"/>
-                        <Button Margin="20,0, 0, 0" Content="Browse"/>
+                        <TextBox HorizontalAlignment="Left" Width="360" x:Name="downFilePathBox" IsReadOnly="True"/>
+                        <Button Content="Choose folder" Margin="20,0,0,0" Click="Button_Click_2"  />
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>

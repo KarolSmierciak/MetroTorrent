@@ -138,7 +138,22 @@ namespace MetroTorrent.Pages
 
         private void pageRoot_Loaded(object sender, RoutedEventArgs e)
         {
-            ConfigData.Load();
+            ConfigData.Instance.OnConfigurationError += ErrorOccured;
+            ConfigData.Instance.OnFirstRun += FirstRunHanlder;
+            ConfigData.Instance.Load();
+        }
+
+        private async void ErrorOccured(string str)
+        {
+            MessageDialog dial = new MessageDialog(str);
+            await dial.ShowAsync();
+        }
+
+        //private bool firstTest = true;
+
+        private void FirstRunHanlder()
+        {
+            this.Frame.Navigate(typeof(FirstRunConfiguration));
         }
     }
 }
