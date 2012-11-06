@@ -115,6 +115,9 @@
     <Compile Include="Common\LayoutAwarePage.cs" />
     <Compile Include="Common\RichTextColumns.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="Controls\TorrentItem.xaml.cs">
+      <DependentUpon>TorrentItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataStorage\ConfigData.cs" />
     <Compile Include="Pages\DownloadsPage.xaml.cs">
       <DependentUpon>DownloadsPage.xaml</DependentUpon>
@@ -151,6 +154,10 @@
     <Page Include="Common\StandardStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\TorrentItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\DownloadsPage.xaml">
       <SubType>Designer</SubType>

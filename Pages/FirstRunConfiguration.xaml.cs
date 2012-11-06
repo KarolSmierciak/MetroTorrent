@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MetroTorrent.Controls;
 using MetroTorrent.DataStorage;
 using MetroTorrent.Settings;
 using Windows.Foundation;
@@ -30,6 +31,11 @@ namespace MetroTorrent.Pages
         public FirstRunConfiguration()
         {
             this.InitializeComponent();
+        }
+
+        public void AddTorrent(TorrentItem item)
+        {
+
         }
 
         /// <summary>
@@ -65,7 +71,6 @@ namespace MetroTorrent.Pages
             {
                 StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
                 this.tempFilePathBox.Text = folder.Path;
-                ConfigData.Instance.TempFilePath = folder.Path;
             }
         }
 
@@ -81,7 +86,6 @@ namespace MetroTorrent.Pages
                 this.downFilePathBox.Text = folder.Path;
                 if (this.tempFilePathBox.Text == "")
                     this.tempFilePathBox.Text = folder.Path;
-                ConfigData.Instance.DownFilePath = folder.Path;
             }
         }
 
@@ -89,6 +93,8 @@ namespace MetroTorrent.Pages
         {
             if (downFilePathBox.Text != "" && tempFilePathBox.Text != "")
             {
+                ConfigData.Instance.DownFilePath = this.downFilePathBox.Text;
+                ConfigData.Instance.TempFilePath = this.tempFilePathBox.Text;
                 ConfigData.Instance.Save();
                 this.Frame.Navigate(typeof(DownloadsPage));
             }
