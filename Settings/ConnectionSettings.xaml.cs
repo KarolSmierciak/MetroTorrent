@@ -55,30 +55,31 @@ namespace MetroTorrent.Settings
 
         private void LayoutAwarePage_Loaded_1(object sender, RoutedEventArgs e)
         {
-            this.upSpeedBox.Text = ConfigData.MaxUploadSpeed.ToString();
-            this.downSpeedBox.Text = ConfigData.MaxDownloadSpeed.ToString();
+            this.upSpeedBox.Text = ConfigData.Instance.MaxUploadSpeed.ToString();
+            this.downSpeedBox.Text = ConfigData.Instance.MaxDownloadSpeed.ToString();
         }
 
-        private void downSpeedBox_Unloaded(object sender, RoutedEventArgs e)
+        private void LayoutAwarePage_Unloaded_1(object sender, RoutedEventArgs e)
         {
             try
             {
-                ConfigData.MaxUploadSpeed = int.Parse(this.upSpeedBox.Text);
+                ConfigData.Instance.MaxUploadSpeed = int.Parse(this.upSpeedBox.Text);
             }
             catch
             {
                 if (this.upSpeedBox.Text.Length == 0)
-                    ConfigData.MaxUploadSpeed = 0;
+                    ConfigData.Instance.MaxUploadSpeed = 0;
             }
             try
             {
-                ConfigData.MaxDownloadSpeed = int.Parse(this.downSpeedBox.Text);
+                ConfigData.Instance.MaxDownloadSpeed = int.Parse(this.downSpeedBox.Text);
             }
             catch
             {
                 if (this.downSpeedBox.Text.Length == 0)
-                    ConfigData.MaxDownloadSpeed = 0;
+                    ConfigData.Instance.MaxDownloadSpeed = 0;
             }
+            ConfigData.Instance.Save();
         }
     }
 }

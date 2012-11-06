@@ -5,17 +5,36 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 
 namespace MetroTorrent.DataStorage
 {
     public class ConfigData
     {
-        private static UserSettings instance = null;
-        private static StorageFolder storageFolder;
+        private static ConfigData _instance = null;
+
+        public static ConfigData Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    _instance = new ConfigData();
+                return _instance;
+            }
+        }
+
+        private UserSettings instance = null;
+        private StorageFolder storageFolder;
+
+        public delegate void FirstRunDelegate();
+        public event FirstRunDelegate OnFirstRun;
+
+        public delegate void ConfigurationErrorDelegate(string str);
+        public event ConfigurationErrorDelegate OnConfigurationError;
 
         private const string filename = "metroconfig.dat";
 
-        public async static void Save()
+        public async void Save()
         {
             StorageFile file = await storageFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteTextAsync(file, instance.ToString());
@@ -24,7 +43,7 @@ namespace MetroTorrent.DataStorage
             //serializer.Serialize(s, instance);
         }
 
-        public async static void Load()
+        public async void Load()
         {
             instance = new UserSettings();
             try
@@ -40,16 +59,19 @@ namespace MetroTorrent.DataStorage
             catch
             {
                 IsFirstRun = true;
+                if (OnFirstRun != null)
+                    OnFirstRun();
             }
+            ApplyPermissions();
         }
 
-        static ConfigData()
+        ConfigData()
         {
             storageFolder = KnownFolders.DocumentsLibrary;
             IsFirstRun = false;
         }
 
-        public static bool IsFirstRun
+        public bool IsFirstRun
         {
             get;
             set;
@@ -57,8 +79,8 @@ namespace MetroTorrent.DataStorage
 
         public class UserSettings
         {
-            public string tempFilePath = KnownFolders.DocumentsLibrary.Path;
-            public string downFilePath = KnownFolders.DocumentsLibrary.Path;
+            public string tempFilePath;
+            public string downFilePath;
             public bool startWithWindows = true;
             public int maxup = 0;
             public int maxdown = 0;
@@ -84,7 +106,7 @@ namespace MetroTorrent.DataStorage
             }
         }
 
-        public static bool RunWithOS
+        public bool RunWithOS
         {
             set
             {
@@ -96,7 +118,7 @@ namespace MetroTorrent.DataStorage
             }
         }
 
-        public static string TempFilePath
+        public string TempFilePath
         {
             get
             {
@@ -107,11 +129,11 @@ namespace MetroTorrent.DataStorage
                 instance.tempFilePath = value;
             }
         }
-        public static string DownFilePath
+        public string DownFilePath
         {
             get
             {
-                return instance.downFilePath;;
+                return instance.downFilePath;
             }
             set
             {
@@ -119,7 +141,7 @@ namespace MetroTorrent.DataStorage
             }
         }
 
-        public static int MaxUploadSpeed
+        public int MaxUploadSpeed
         {
             get
             {
@@ -131,7 +153,7 @@ namespace MetroTorrent.DataStorage
             }
         }
 
-        public static int MaxDownloadSpeed
+        public int MaxDownloadSpeed
         {
             get
             {
@@ -141,6 +163,31 @@ namespace MetroTorrent.DataStorage
             {
                 instance.maxdown = value;
             }
+        }
+
+        public async void ApplyPermissions()
+        {
+            string err = "";
+            try
+            {
+                StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", await StorageFolder.GetFolderFromPathAsync(TempFilePath));
+            }
+            catch
+            {
+                err = "Unable to get writing permission for location " + TempFilePath;
+            }
+            try
+            {
+                StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", await StorageFolder.GetFolderFromPathAsync(DownFilePath));
+            }
+            catch
+            {
+                if (err != "")
+                    err += "\n";
+                err = "Unable to get writing permission for location " + DownFilePath;
+            }
+            if (err != "" && OnConfigurationError != null && !IsFirstRun)
+                OnConfigurationError(err);
         }
 
     }
