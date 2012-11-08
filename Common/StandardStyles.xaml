@@ -102,6 +102,14 @@
         </Setter>
     </Style>
 
+    <Style x:Key="SettingsSubheaderTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BasicTextStyle}">
+        <Setter Property="FontSize" Value="25" />
+        <Setter Property="Foreground" Value="#DEC3C3C3" />
+        <Setter Property="Margin" Value="0,40,0,20" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+
     <Style x:Key="TitleTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BaselineTextStyle}">
         <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
