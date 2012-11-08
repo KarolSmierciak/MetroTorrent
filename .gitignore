@@ -2,6 +2,11 @@
 bin
 obj
 
+# Visual Studio Solution user options
+# why better not add them:
+# http://stackoverflow.com/questions/72298/should-i-add-the-visual-studio-suo-and-user-files-to-source-control
+*.suo
+
 # mstest test results
 TestResults
 
