@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using MetroTorrent.DataStorage;
+using MetroTorrent.ServerCommunication;
 using MetroTorrent.Settings;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -140,6 +141,11 @@ namespace MetroTorrent.Pages
         /// <param name="e">Event data that describes how the selection was changed.</param>
         void ItemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            /*SerialTest st = new SerialTest();
+            st.Name = "trolololo";
+            SerialTest x = LocalStorage.Deserialize<SerialTest>(LocalStorage.Serialize(st));
+            MessageDialog md = new MessageDialog(x.Name);
+            await md.ShowAsync();*/
             int id = this.itemListView.SelectedIndex;
             if (filetypelabel.Visibility == Visibility.Collapsed)
             {
@@ -322,6 +328,7 @@ namespace MetroTorrent.Pages
         private static Object firststartlock = new Object();
         private void pageRoot_Loaded(object sender, RoutedEventArgs e)
         {
+
             lock (firststartlock)
             {
                 ConfigData.Instance.OnConfigurationError += ErrorOccured;

@@ -132,10 +132,10 @@
 
                 <Image x:Name="smallskull" Visibility="Collapsed" Grid.Row="1" Margin="0,0,20,0" Width="180" Height="180"  Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Source="ms-appx:///Assets/Logo.png"/>
                 <StackPanel x:Name="itemDetailTitlePanel" Grid.Row="1" Grid.Column="1">
-                    <TextBlock x:Name="itemTitle" Margin="0,-10,0,0" Text="{Binding TorrentName}" Style="{StaticResource SubheaderTextStyle}"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                        <TextBlock x:Name="filetypelabel"  Text="File types: "  Margin="0,0,10,0" Visibility="Collapsed"/>
-                        <TextBlock x:Name="itemSubtitle" Text="{Binding FileTypes}" />
+                    <TextBlock x:Name="itemTitle" Margin="0,-10,0,0" Text="{Binding TorrentName}" Style="{StaticResource SubheaderTextStyle}" FontSize="34" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,20">
+                        <TextBlock x:Name="filetypelabel"  Text="File types: " Margin="0,0,10,0" Visibility="Collapsed" FontSize="14" FontFamily="Global User Interface"/>
+                        <TextBlock x:Name="itemSubtitle" Text="{Binding FileTypes}" FontSize="14" />
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,20,0,0">
@@ -151,28 +151,28 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-                            <TextBlock x:Name="downloadlabel" Margin="0,0,10,0" Text="Download: " Visibility="Collapsed"/>
-                            <TextBlock Text="{Binding DownloadSpeed}" />
-                            <TextBlock x:Name="downloadUnitName" Margin="5,0,0,0" Text="kB/s" Visibility="Collapsed"/>
+                            <TextBlock x:Name="downloadlabel" Margin="0,0,10,0" Text="Download: " Style="{StaticResource DetailedTorentInfoText}" Visibility="Collapsed"/>
+                            <TextBlock Text="{Binding DownloadSpeed}" Style="{StaticResource DetailedTorentInfoText}" />
+                            <TextBlock x:Name="downloadUnitName" Margin="5,0,0,0" Text="kB/s" Visibility="Collapsed" Style="{StaticResource DetailedTorentInfoText}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                            <TextBlock x:Name="seedslabel" Margin="0,0,10,0" Text="Seeds:" Visibility="Collapsed"/>
-                            <TextBlock Text="{Binding Seeds}" />
+                            <TextBlock x:Name="seedslabel" Margin="0,0,10,0" Text="Seeds:" Visibility="Collapsed" Style="{StaticResource DetailedTorentInfoText}"/>
+                            <TextBlock Text="{Binding Seeds}" Style="{StaticResource DetailedTorentInfoText}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
-                            <TextBlock x:Name="uploadlabel1" Margin="0,0,10,0" Text="Upload:" Visibility="Collapsed" />
-                            <TextBlock Text="{Binding UploadSpeed}" />
-                            <TextBlock x:Name="uploadUnitLabel" Margin="5,0,0,0" Text="kB/s" Visibility="Collapsed"/>
+                            <TextBlock x:Name="uploadlabel1" Margin="0,0,10,0" Text="Upload:" Visibility="Collapsed" Style="{StaticResource DetailedTorentInfoText}"/>
+                            <TextBlock Text="{Binding UploadSpeed}" Style="{StaticResource DetailedTorentInfoText}"/>
+                            <TextBlock x:Name="uploadUnitLabel" Margin="5,0,0,0" Text="kB/s" Visibility="Collapsed" Style="{StaticResource DetailedTorentInfoText}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-                            <TextBlock x:Name="peerslabel" Margin="0,0,10,0" Text="Peers:" Visibility="Collapsed"/>
-                            <TextBlock Text="{Binding Peers}" />
+                            <TextBlock x:Name="peerslabel" Margin="0,0,10,0" Text="Peers:" Style="{StaticResource DetailedTorentInfoText}" Visibility="Collapsed"/>
+                            <TextBlock Text="{Binding Peers}" Style="{StaticResource DetailedTorentInfoText}"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="0,20,0,0">
-                            <TextBlock x:Name="etalabel" Margin="0,0,20,0" Text="ETA:" Visibility="Collapsed"/>
-                            <TextBlock Text="{Binding ETA}" />
+                            <TextBlock x:Name="etalabel" Margin="0,0,20,0" Text="ETA:" Visibility="Collapsed" Style="{StaticResource DetailedTorentInfoText}"/>
+                            <TextBlock Text="{Binding ETA}" Style="{StaticResource DetailedTorentInfoText}"/>
                         </StackPanel>
                     </Grid>
                     <ListBox x:Name="filesListBox" Visibility="Collapsed">
@@ -185,7 +185,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <Image x:Name="bigskull" Visibility="Visible" Grid.Row="1" Margin="0,100,0,0"   Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Source="ms-appx:///Assets/SpalshScreen.png"/>
+                    <Image x:Name="bigskull" Visibility="Visible" Grid.Row="1" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Source="ms-appx:///Assets/SpalshScreen.png"/>
                 </StackPanel>
             </Grid>
         </ScrollViewer>
