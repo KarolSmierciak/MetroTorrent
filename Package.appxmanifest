@@ -15,9 +15,9 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="MetroTorrent.App">
-      <VisualElements DisplayName="MetroTorrent" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="MetroTorrent" ForegroundText="light" BackgroundColor="#464646">
-        <DefaultTile ShowName="allLogos" />
-        <SplashScreen Image="Assets\SplashScreen.png" />
+      <VisualElements DisplayName="MetroTorrent" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="MetroTorrent" ForegroundText="light" BackgroundColor="#000000">
+        <DefaultTile ShowName="allLogos" WideLogo="Assets\WideLogo.png" />
+        <SplashScreen Image="Assets\SpalshScreen.png" BackgroundColor="#FF0000" />
       </VisualElements>
       <Extensions>
         <Extension Category="windows.fileTypeAssociation">
