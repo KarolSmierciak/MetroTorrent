@@ -48,6 +48,7 @@ namespace MetroTorrent.Pages
             this.InitializeComponent();
             SettingsPane.GetForCurrentView().CommandsRequested += onCommandsRequested;
             this.itemListView.ItemsSource = torrents;
+            ServerCommunicator.Instance.TorrentInfoReceived += TorrentReceived;
             ServerCommunicator.Instance.StartListening();
 
             //AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
