@@ -10,6 +10,24 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" Loaded="pageRoot_Loaded">
 
+    <Page.BottomAppBar>
+        <AppBar Opened="AppBar_Opened_1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="50*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button x:Name="badd" Style="{StaticResource AddAppBarButtonStyle}" Tag="Remove entry" Click="badd_Click" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button x:Name="bremove" Style="{StaticResource RemoveAppBarButtonStyle}" Tag="Remove torrent" Visibility="Collapsed" Click="bremove_Click"/>
+                    <Button x:Name="bdelete" Style="{StaticResource DeleteAppBarButtonStyle}" Tag="Remove torrent and delete files" Visibility="Collapsed" Click="bdelete_Click"/>
+                </StackPanel>
+            </Grid>
+        </AppBar>
+    </Page.BottomAppBar>
+
     <Page.Resources>
 
         <!-- Collection of items displayed by this page -->
@@ -112,11 +130,11 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Image Grid.Row="1" Margin="0,0,20,0" Width="180" Height="180" Source="{Binding Image}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
+                <Image x:Name="smallskull" Visibility="Collapsed" Grid.Row="1" Margin="0,0,20,0" Width="180" Height="180"  Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Source="ms-appx:///Assets/Logo.png"/>
                 <StackPanel x:Name="itemDetailTitlePanel" Grid.Row="1" Grid.Column="1">
                     <TextBlock x:Name="itemTitle" Margin="0,-10,0,0" Text="{Binding TorrentName}" Style="{StaticResource SubheaderTextStyle}"/>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                        <TextBlock x:Name="filetypelabel" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="filetypelabel"  Text="File types: "  Margin="0,0,10,0" Visibility="Collapsed"/>
                         <TextBlock x:Name="itemSubtitle" Text="{Binding FileTypes}" />
                     </StackPanel>
                 </StackPanel>
@@ -133,38 +151,41 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-                            <TextBlock x:Name="downloadlabel" Margin="0,0,10,0" />
+                            <TextBlock x:Name="downloadlabel" Margin="0,0,10,0" Text="Download: " Visibility="Collapsed"/>
                             <TextBlock Text="{Binding DownloadSpeed}" />
+                            <TextBlock x:Name="downloadUnitName" Margin="5,0,0,0" Text="kB/s" Visibility="Collapsed"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                            <TextBlock x:Name="seedslabel" Margin="0,0,10,0" />
+                            <TextBlock x:Name="seedslabel" Margin="0,0,10,0" Text="Seeds:" Visibility="Collapsed"/>
                             <TextBlock Text="{Binding Seeds}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
-                            <TextBlock x:Name="uploadlabel1" Margin="0,0,10,0" />
+                            <TextBlock x:Name="uploadlabel1" Margin="0,0,10,0" Text="Upload:" Visibility="Collapsed" />
                             <TextBlock Text="{Binding UploadSpeed}" />
+                            <TextBlock x:Name="uploadUnitLabel" Margin="5,0,0,0" Text="kB/s" Visibility="Collapsed"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-                            <TextBlock x:Name="peerslabel" Margin="0,0,10,0" />
+                            <TextBlock x:Name="peerslabel" Margin="0,0,10,0" Text="Peers:" Visibility="Collapsed"/>
                             <TextBlock Text="{Binding Peers}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="0,20,0,0">
-                            <TextBlock x:Name="etalabel" Margin="0,0,20,0" />
+                            <TextBlock x:Name="etalabel" Margin="0,0,20,0" Text="ETA:" Visibility="Collapsed"/>
                             <TextBlock Text="{Binding ETA}" />
                         </StackPanel>
                     </Grid>
-                    <ListBox x:Name="filesListBox">
+                    <ListBox x:Name="filesListBox" Visibility="Collapsed">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image />
-                                    <TextBlock />
+                                    <Image Source="{Binding FileImage}"/>
+                                    <TextBlock Text="{Binding Name}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
+                    <Image x:Name="bigskull" Visibility="Visible" Grid.Row="1" Margin="0,100,0,0"   Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Source="ms-appx:///Assets/SpalshScreen.png"/>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

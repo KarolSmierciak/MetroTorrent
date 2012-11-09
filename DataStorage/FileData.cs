@@ -10,20 +10,18 @@ namespace MetroTorrent.DataStorage
 {
     public class FileData
     {
-        public FileData(Image image, string name)
+        public FileData(string name)
         {
-            this.image = image;
             this.name = name;
         }
 
         private string name;
-        private Image image;
 
         public Image FileImage
         {
             get
             {
-                return image;
+                return null;
             }
         }
 

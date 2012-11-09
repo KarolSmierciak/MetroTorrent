@@ -7,6 +7,9 @@ using MetroTorrent.DataStorage;
 using MetroTorrent.Settings;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.AccessCache;
+using Windows.Storage.Pickers;
 using Windows.UI.ApplicationSettings;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
@@ -44,29 +47,6 @@ namespace MetroTorrent.Pages
             SettingsPane.GetForCurrentView().CommandsRequested += onCommandsRequested;
             this.itemListView.ItemsSource = torrents;
 
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
             AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
             AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
             AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
@@ -161,18 +141,49 @@ namespace MetroTorrent.Pages
         void ItemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int id = this.itemListView.SelectedIndex;
-            if (filetypelabel.Text == "")
+            if (filetypelabel.Visibility == Visibility.Collapsed)
             {
-                filetypelabel.Text = "File types:";
-                downloadlabel.Text = "Download:";
-                uploadlabel1.Text = "Upload:";
-                seedslabel.Text = "Seeds:";
-                peerslabel.Text = "Peers:";
-                etalabel.Text = "ETA:";
+                ShowAllLabels();
             }
-            //itemSubtitle.Text = torrents[id].FileTypes;
+
+            if (id > -1)
+                filesListBox.ItemsSource = torrents[id].Files;
+            else
+                HideAllLabels();
 
             if (this.UsingLogicalPageNavigation()) this.InvalidateVisualState();
+        }
+
+        void ShowAllLabels()
+        {
+            filetypelabel.Visibility = Visibility.Visible;
+            downloadlabel.Visibility = Visibility.Visible;
+            uploadlabel1.Visibility = Visibility.Visible;
+            seedslabel.Visibility = Visibility.Visible;
+            peerslabel.Visibility = Visibility.Visible;
+            etalabel.Visibility = Visibility.Visible;
+            uploadUnitLabel.Visibility = Visibility.Visible;
+            downloadUnitName.Visibility = Visibility.Visible;
+            filesListBox.Visibility = Visibility.Visible;
+            smallskull.Visibility = Visibility.Visible;
+
+            bigskull.Visibility = Visibility.Collapsed;
+        }
+
+        void HideAllLabels()
+        {
+            filetypelabel.Visibility = Visibility.Collapsed;
+            downloadlabel.Visibility = Visibility.Collapsed;
+            uploadlabel1.Visibility = Visibility.Collapsed;
+            seedslabel.Visibility = Visibility.Collapsed;
+            peerslabel.Visibility = Visibility.Collapsed;
+            etalabel.Visibility = Visibility.Collapsed;
+            uploadUnitLabel.Visibility = Visibility.Collapsed;
+            downloadUnitName.Visibility = Visibility.Collapsed;
+            filesListBox.Visibility = Visibility.Collapsed;
+            smallskull.Visibility = Visibility.Collapsed;
+
+            bigskull.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -339,6 +350,52 @@ namespace MetroTorrent.Pages
         public void AddTorrent(TorrentData torrent)
         {
             torrents.Add(torrent);
+        }
+
+        private void AppBar_Opened_1(object sender, object e)
+        {
+            if (itemListView.SelectedItem != null)
+            {
+                bremove.Visibility = Visibility.Visible;
+                bdelete.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                bremove.Visibility = Visibility.Collapsed;
+                bdelete.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void RemoveTorrent()
+        {
+            filesListBox.ItemsSource = null;
+            torrents.RemoveAt(itemListView.SelectedIndex);
+        }
+
+        private void bremove_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveTorrent();
+        }
+
+        private void bdelete_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveTorrent();
+        }
+
+        private async void badd_Click(object sender, RoutedEventArgs e)
+        {
+            FileOpenPicker openPicker = new FileOpenPicker();
+            openPicker.ViewMode = PickerViewMode.List;
+            openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            openPicker.FileTypeFilter.Add(".torrent");
+            IReadOnlyList<StorageFile> files = await openPicker.PickMultipleFilesAsync();
+            if (files.Count > 0)
+            {
+                foreach (StorageFile file in files)
+                {
+                    
+                }
+            }
         }
 
     }
