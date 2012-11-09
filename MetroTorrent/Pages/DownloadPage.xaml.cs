@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Commons;
 using MetroTorrent.DataStorage;
 using MetroTorrent.ServerCommunication;
 using MetroTorrent.Settings;
@@ -47,10 +48,30 @@ namespace MetroTorrent.Pages
             this.InitializeComponent();
             SettingsPane.GetForCurrentView().CommandsRequested += onCommandsRequested;
             this.itemListView.ItemsSource = torrents;
+            ServerCommunicator.Instance.StartListening();
 
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            //AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            //AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            //AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+        }
+
+        private void TorrentReceived(TorrentInfo ti)
+        {
+            TorrentData td = new TorrentData(ti);
+            int i;
+            lock (torrents)
+            {
+                for (i = 0; i < torrents.Count; i++)
+                {
+                    if (torrents[i].EqualsTorrent(td))
+                    {
+                        torrents[i].Update(td);
+                        break;
+                    }
+                }
+                if (i == torrents.Count)
+                    AddTorrent(td);
+            }
         }
 
         #region Page state management
@@ -375,8 +396,11 @@ namespace MetroTorrent.Pages
 
         private void RemoveTorrent()
         {
-            filesListBox.ItemsSource = null;
-            torrents.RemoveAt(itemListView.SelectedIndex);
+            lock (torrents)
+            {
+                filesListBox.ItemsSource = null;
+                torrents.RemoveAt(itemListView.SelectedIndex);
+            }
         }
 
         private void bremove_Click(object sender, RoutedEventArgs e)
