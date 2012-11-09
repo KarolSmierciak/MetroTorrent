@@ -104,7 +104,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <ProjectReference Include="Commons\Commons.csproj">
+    <ProjectReference Include="..\Commons\Commons.csproj">
       <Project>{7c77a5d7-62d0-46b4-9681-275e204d17c1}</Project>
       <Name>Commons</Name>
     </ProjectReference>
