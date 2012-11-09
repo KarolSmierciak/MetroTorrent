@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Commons
 {
-    class Serializer
+    public static class Serializer
     {
         public static T Deserialize<T>(string json)
         {

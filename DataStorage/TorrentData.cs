@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Commons;
 
 namespace MetroTorrent.DataStorage
 {
@@ -18,17 +19,43 @@ namespace MetroTorrent.DataStorage
             
         }
 
+        public TorrentData (TorrentInfo ti)
+        {
+            foreach (string s in ti.Files)
+                files.Add(new FileData(s));
+            this.torrentName = ti.Name;
+            this.torrentProgress = ti.Progress;
+            this.downSpeed = ti.DownloadSpeed;
+            this.upSpeed = ti.UploadSpeed;
+            this.eta = ti.ETA;
+            this.peers = ti.Peers;
+            this.seeds = ti.Seeds;
+        }
+
+        public void Update(TorrentData td)
+        {
+            this.torrentProgress = td.torrentProgress;
+            this.downSpeed = td.DownloadSpeed;
+            this.upSpeed = td.upSpeed;
+            this.eta = td.eta;
+            this.peers = td.peers;
+            this.seeds = td.seeds;
+        }
+
         public TorrentData(string name)
         {
             this.TorrentName = name;
-            files.Add(new FileData("asdf.jpg"));
-            files.Add(new FileData("asdf.avi"));
+            //files.Add(new FileData("asdf.jpg"));
+            //files.Add(new FileData("asdf.avi"));
         }
 
         private double torrentProgress;
         private string torrentName;
         private int downSpeed;
         private int upSpeed;
+        private string eta;
+        private int seeds;
+        private int peers;
 
         public ObservableCollection<FileData> Files
         {
@@ -114,20 +141,30 @@ namespace MetroTorrent.DataStorage
 
         public int Seeds
         {
-            get { return 0; }
+            get { return seeds; }
         }
 
         public int Peers
         {
-            get { return 0; }
+            get { return peers; }
         }
 
         public string ETA
         {
             get
             {
-                return "some ETA";
+                return eta;
             }
+        }
+
+        public bool EqualsTorrent(object obj)
+        {
+            if (obj is TorrentData)
+            {
+                if ((obj as TorrentData).torrentName == this.torrentName)
+                    return true;
+            }
+            return false;
         }
     }
 }
