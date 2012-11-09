@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MetroTorrent.Controls;
 using MetroTorrent.DataStorage;
 using MetroTorrent.Settings;
 using Windows.Foundation;
@@ -31,11 +30,6 @@ namespace MetroTorrent.Pages
         public FirstRunConfiguration()
         {
             this.InitializeComponent();
-        }
-
-        public void AddTorrent(TorrentItem item)
-        {
-
         }
 
         /// <summary>
@@ -96,7 +90,8 @@ namespace MetroTorrent.Pages
                 ConfigData.Instance.DownFilePath = this.downFilePathBox.Text;
                 ConfigData.Instance.TempFilePath = this.tempFilePathBox.Text;
                 ConfigData.Instance.Save();
-                this.Frame.Navigate(typeof(DownloadsPage));
+                //this.Frame.Navigate(typeof(DownloadsPage));
+                this.Frame.GoBack();
             }
             else
             {
