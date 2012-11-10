@@ -51,8 +51,6 @@ namespace MetroTorrent.DataStorage
         public TorrentData(string name)
         {
             this.TorrentName = name;
-            files.Add(new FileData("asdf.jpg"));
-            files.Add(new FileData("asdf.avi"));
         }
 
         private double torrentProgress;

@@ -52,8 +52,6 @@ namespace MetroTorrent.Pages
             ServerCommunicator.Instance.TorrentInfoReceived += TorrentReceived;
             ServerCommunicator.Instance.StartListening();
 
-            AddTorrent(new TorrentData("aaaaaaaaaaa"));
-
         }
 
         private void TorrentReceived(TorrentInfo ti)

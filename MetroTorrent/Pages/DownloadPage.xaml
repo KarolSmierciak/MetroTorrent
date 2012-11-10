@@ -74,7 +74,6 @@
             Grid.Row="1"
             Margin="-10,-10,0,0"
             Padding="10,0,0,60"
-            Background="Chocolate"
             ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
             SelectionChanged="ItemListView_SelectionChanged" FontFamily="Global User Interface">
         	<ListBox.Background>
