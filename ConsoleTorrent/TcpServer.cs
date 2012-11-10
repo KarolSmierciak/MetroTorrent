@@ -117,8 +117,6 @@
         {
         }
 
-
-
         /// <summary>
         /// Sends important tasks-related data to the MetroTorrent front-end.
         /// </summary>
