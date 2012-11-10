@@ -406,12 +406,15 @@ namespace MetroTorrent.Pages
 
         private void bremove_Click(object sender, RoutedEventArgs e)
         {
+            ServerCommunicator.Instance.SendMessage("2" + torrents[itemListView.SelectedIndex].TorrentName);
             RemoveTorrent();
         }
 
         private void bdelete_Click(object sender, RoutedEventArgs e)
         {
+            ServerCommunicator.Instance.SendMessage("2" + torrents[itemListView.SelectedIndex].TorrentName);
             RemoveTorrent();
+            
         }
 
         private async void badd_Click(object sender, RoutedEventArgs e)
@@ -425,7 +428,7 @@ namespace MetroTorrent.Pages
             {
                 foreach (StorageFile file in files)
                 {
-                    
+                    ServerCommunicator.Instance.SendMessage("1"+file.Path);
                 }
             }
         }

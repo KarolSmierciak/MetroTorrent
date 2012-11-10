@@ -15,12 +15,11 @@ namespace MetroTorrent.ServerCommunication
     {
         private static StreamSocket socket;
         private static HostName hostName;
-        private static string port = "60606";
+        private static string port1 = "60606";
+        private static string port2 = "60607";
 
         public delegate void TorrentInfoReceinvedHandler(TorrentInfo ti);
         public event TorrentInfoReceinvedHandler TorrentInfoReceived;
-
-        private Queue<string> tosend = new Queue<string>();
 
         private ServerCommunicator()
         {
@@ -39,11 +38,32 @@ namespace MetroTorrent.ServerCommunication
             }
         }
 
-        public void SendMessage(string msg)
+        public async void SendMessage(string msg)
         {
-            lock (tosend)
+            HostName hostName;
+            try
             {
-                tosend.Enqueue(msg);
+                hostName = new HostName("localhost");
+            }
+            catch (ArgumentException)
+            {
+                return;
+            }
+            StreamSocket socket;
+            try
+            {
+                using (socket = new StreamSocket())
+                {
+                    await socket.ConnectAsync(hostName, port2);
+                    //CoreApplication.Properties.Add("connected", null);
+                    DataWriter dw = new DataWriter(socket.OutputStream);
+                    dw.WriteString(msg);
+                    await dw.StoreAsync();
+                }
+            }
+            catch
+            {
+                //break;
             }
         }
 
@@ -63,7 +83,7 @@ namespace MetroTorrent.ServerCommunication
                 try
                 {
                     socket = new StreamSocket();
-                    await socket.ConnectAsync(hostName, port);
+                    await socket.ConnectAsync(hostName, port1);
                     //CoreApplication.Properties.Add("connected", null);
                 }
                 catch
@@ -81,16 +101,6 @@ namespace MetroTorrent.ServerCommunication
                         TorrentInfo ti = Commons.Serializer.Deserialize<TorrentInfo>(str);
                         TorrentInfoReceived(ti);
                     }
-                    /*lock (tosend)
-                    {
-                        if (tosend.Count > 0)
-                        {
-                            string s = tosend.Dequeue();
-                            DataWriter dw = new DataWriter(socket.OutputStream);
-                            
-                            dw.WriteString(s);
-                        }
-                    }*/
                 }
                 catch
                 {
