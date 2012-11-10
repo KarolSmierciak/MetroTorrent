@@ -42,15 +42,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MetroClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serializator.cs" />
-    <Compile Include="TorrentListSender.cs" />
+    <Compile Include="TcpServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Commons\Commons.csproj">
+      <Project>{7c77a5d7-62d0-46b4-9681-275e204d17c1}</Project>
+      <Name>Commons</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MonoTorrent.Dht\MonoTorrent.Dht.csproj">
       <Project>{7a2a7e73-fd43-4171-aa34-da413d35459e}</Project>
       <Name>MonoTorrent.Dht</Name>
