@@ -15,10 +15,18 @@
     {
         /* Fields */
 
+        public delegate void TorrentAddedHandler(string path);
+        public event TorrentAddedHandler TorrentAdded;
+
+        public delegate void TorrentRemovedHanlder(string path);
+        public event TorrentRemovedHanlder TorrentRemoved;
+
+
         /// <summary>
         /// TcpListener object - core of the TcpServer class.
         /// </summary>
         private TcpListener tcpListener;
+        private TcpListener queryListener;
 
         /// <summary>
         /// Client for the TCP/IP communication.
@@ -26,14 +34,9 @@
         private TcpClient tcpClient;
 
         /// <summary>
-        /// Thread responsible for listening to the MetroTorrent front-end.
-        /// </summary>
-        private Thread listenThread;
-
-        /// <summary>
         /// Thread responsible for updating the MetroTorrent front-end.
         /// </summary>
-        private Thread updateThread;
+        private Thread queryThread;
 
         /* Constructor */
 
@@ -55,9 +58,8 @@
         {
             while (true)
             {
-                
                 this.tcpClient = this.tcpListener.AcceptTcpClient();
-                System.Console.WriteLine("Client connected");
+                //System.Console.WriteLine("Client connected");
                 try
                 {
                     TorrentInfo torrentInfo = new TorrentInfo()
@@ -71,17 +73,9 @@
                     string update = Serializer.Serialize(torrentInfo);
                     byte[] byteArray = Encoding.UTF8.GetBytes(update);
                     tcpStream.Write(byteArray, 0, byteArray.Length);
-                    /*tcpStream.ReadTimeout = 500;
-                    byteArray = new byte[1024];
-                    int read = tcpStream.Read(byteArray, 0, byteArray.Length);
-                    if (read > 0)
-                    {
-                        string temp = Encoding.Default.GetString(byteArray);
-                        ProcessQuery(tcpStream, temp);
-                    }*/
                     tcpClient.Close();
 
-                    //Thread.Sleep(500);
+                    Thread.Sleep(1000);
                 }
                 catch
                 {
@@ -90,9 +84,54 @@
             }
         }
 
+        public void ListenToQueries()
+        {
+            queryListener = new TcpListener(IPAddress.Any, 60607);
+            this.queryListener.Start();
+            queryThread = new Thread(new ThreadStart(ProcessQueries));
+            queryThread.Start();
+        }
+
+        private void ProcessQueries()
+        {
+            while (true)
+            {
+                var Client = this.queryListener.AcceptTcpClient();
+                try
+                {
+                    var tcpStream = Client.GetStream();
+                    byte [] byteArray = new byte[1024];
+                    int read = tcpStream.Read(byteArray, 0, byteArray.Length);
+                    if (read > 0)
+                    {
+                        string temp = Encoding.Default.GetString(byteArray);
+                        ProcessQuery(tcpStream, temp);
+                    }
+                    tcpClient.Close();
+                }
+                catch
+                {
+                }
+            }
+        }
+
         private void ProcessQuery(NetworkStream stream, string str)
         {
             System.Console.WriteLine(str);
+            string id = str.Substring(0,1);
+            string path = str.Substring(1);
+
+            switch (id)
+            {
+                case "1":
+                    if (TorrentAdded != null)
+                        TorrentAdded(path);
+                    break;
+                case "2":
+                    if (TorrentRemoved != null)
+                        TorrentRemoved(path);
+                    break;
+            }
         }
 
     }
