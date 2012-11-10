@@ -40,6 +40,12 @@ namespace MetroTorrent.DataStorage
             this.eta = td.eta;
             this.peers = td.peers;
             this.seeds = td.seeds;
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("TorrentProgress"));
+                PropertyChanged(this, new PropertyChangedEventArgs("DownloadSpeed"));
+                PropertyChanged(this, new PropertyChangedEventArgs("UploadSpeed"));
+            }
         }
 
         public TorrentData(string name)
