@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace MetroTorrent.DataStorage
 {
@@ -17,11 +19,11 @@ namespace MetroTorrent.DataStorage
 
         private string name;
 
-        public Image FileImage
+        public string FileImage
         {
             get
             {
-                return null;
+                return "audio.png";
             }
         }
 

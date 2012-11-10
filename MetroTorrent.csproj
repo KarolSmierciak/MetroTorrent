@@ -125,9 +125,6 @@
     <Compile Include="Pages\DownloadPage.xaml.cs">
       <DependentUpon>DownloadPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\DownloadsPage.xaml.cs">
-      <DependentUpon>DownloadsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\FirstRunConfiguration.xaml.cs">
       <DependentUpon>FirstRunConfiguration.xaml</DependentUpon>
     </Compile>
@@ -147,10 +144,13 @@
     <None Include="MetroTorrent_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\audio.png" />
+    <Content Include="Assets\image.png" />
     <Content Include="Assets\Logo.png" />
     <Content Include="Assets\SmallLogo.png" />
     <Content Include="Assets\SpalshScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\video.png" />
     <Content Include="Assets\WideLogo.png" />
     <Content Include="Common\ReadMe.txt" />
   </ItemGroup>
@@ -167,10 +167,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\DownloadsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\FirstRunConfiguration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -183,6 +179,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ServerStarter">
+      <HintPath>ServerStarter\bin\Debug\ServerStarter.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

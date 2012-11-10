@@ -24,7 +24,7 @@ namespace MetroTorrent.ServerCommunication
         {
             try
             {
-                hostName = new HostName("localhost");
+                hostName = new HostName("10.10.2.74");
             }
             catch (ArgumentException)
             {
