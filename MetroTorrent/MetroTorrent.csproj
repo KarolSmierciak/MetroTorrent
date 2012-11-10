@@ -144,10 +144,15 @@
     <None Include="MetroTorrent_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\audio.png" />
+    <Content Include="Assets\background.png" />
+    <Content Include="Assets\image.png" />
     <Content Include="Assets\Logo.png" />
+    <Content Include="Assets\other.png" />
     <Content Include="Assets\SmallLogo.png" />
     <Content Include="Assets\SpalshScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\video.png" />
     <Content Include="Assets\WideLogo.png" />
     <Content Include="Common\ReadMe.txt" />
   </ItemGroup>

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
-
-namespace MetroTorrent.DataStorage
+﻿namespace MetroTorrent.DataStorage
 {
     public class FileData
     {
@@ -17,11 +9,21 @@ namespace MetroTorrent.DataStorage
 
         private string name;
 
-        public Image FileImage
+        public string FileImage
         {
             get
             {
-                return null;
+                switch (FileType)
+                {
+                    case "Audios":
+                        return "/Assets/audio.png";
+                    case "Videos":
+                        return "/Assets/video.png";
+                    case "Images":
+                        return "/Assets/image.png";
+                    default:
+                        return "/Assets/other.png";
+                }
             }
         }
 
@@ -40,11 +42,11 @@ namespace MetroTorrent.DataStorage
                 string[] arr = name.Split('.');
                 string ext = arr[arr.Length - 1].ToLower();
                 string ret;
-                if (ext == "avi" || ext == "mov" || ext == "mov")
+                if (ext == "avi" || ext == "mov")
                     ret = "Videos";
                 else if (ext == "ogg" || ext == "wma" || ext == "wav" || ext == "mp3")
                     ret = "Audios";
-                else if (ext == "jpg" || ext == "png" || ext == "bmp" || ext == "psd")
+                else if (ext == "jpg" || ext == "png" || ext == "bmp" || ext == "psd" || ext == "jpeg")
                     ret = "Images";
                 else
                     ret = "Others";

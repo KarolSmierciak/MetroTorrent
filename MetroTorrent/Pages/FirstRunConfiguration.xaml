@@ -21,22 +21,37 @@
         * Row 0 contains the back button and page title
         * Row 1 contains the rest of the page layout
     -->
-    <Grid Style="{StaticResource LayoutRootStyle}">
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.472,2.497" StartPoint="0.459,0.237">
+                <GradientStop Color="Black"/>
+                <GradientStop Color="White" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Back button and page title -->
-        <Grid>
+        <Grid Background="Black">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Margin ="100,0,0,50" x:Name="pageTitle" Grid.Column="1" Text="First run configuration" Style="{StaticResource PageHeaderTextStyle}"/>
+            <Grid Grid.ColumnSpan="2" HorizontalAlignment="Right" Height="127.464" Margin="1100,22.536,0,-10" VerticalAlignment="Bottom" Width="241.2" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto">
+            	<Grid.RenderTransform>
+            		<CompositeTransform Rotation="16.564"/>
+            	</Grid.RenderTransform>
+            	<Grid.Background>
+            		<ImageBrush ImageSource="ms-appx:///Assets/background.png"/>
+            	</Grid.Background>
+            </Grid>
         </Grid>
+
         
-        <StackPanel HorizontalAlignment="Center" Height="220" Grid.Row="1" VerticalAlignment="Center" Width="510">
+        <StackPanel HorizontalAlignment="Center" Height="220" Grid.Row="1" VerticalAlignment="Center" Width="510" Margin="453,178,403,230">
             <TextBlock Text="Temporary files folder" Margin="0,10,0,0" Style="{StaticResource BasicTextStyle}" />
             <StackPanel Margin="0, 7, 0, 0" Orientation="Horizontal">
                 <TextBox x:Name="tempFilePathBox" HorizontalAlignment="Left" Width="360" IsReadOnly="True"/>
@@ -49,6 +64,8 @@
             </StackPanel>
             <Button Content="Save" HorizontalAlignment="Center" Margin="0,20,0,0" Click="Button_Click_3" />
         </StackPanel>
+
+
 
         <VisualStateManager.VisualStateGroups>
 
@@ -67,6 +84,7 @@
                 </VisualState>
 
                 <!-- The back button and title have different styles when snapped -->
+                
                 <VisualState x:Name="Snapped">
                     <Storyboard>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">

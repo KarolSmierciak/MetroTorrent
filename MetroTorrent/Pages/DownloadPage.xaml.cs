@@ -52,6 +52,8 @@ namespace MetroTorrent.Pages
             ServerCommunicator.Instance.TorrentInfoReceived += TorrentReceived;
             ServerCommunicator.Instance.StartListening();
 
+            AddTorrent(new TorrentData("aaaaaaaaaaa"));
+
         }
 
         private void TorrentReceived(TorrentInfo ti)
@@ -173,7 +175,9 @@ namespace MetroTorrent.Pages
             }
 
             if (id > -1)
-                filesListBox.ItemsSource = torrents[id].Files;
+            {
+                filesListBox.ItemsSource = torrents[id].Files;             
+            }
             else
                 HideAllLabels();
 

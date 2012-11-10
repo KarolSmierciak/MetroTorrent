@@ -30,6 +30,7 @@ namespace MetroTorrent.Pages
         public FirstRunConfiguration()
         {
             this.InitializeComponent();
+            
         }
 
         /// <summary>
