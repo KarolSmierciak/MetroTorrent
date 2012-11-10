@@ -46,14 +46,39 @@ namespace MetroTorrent.Pages
         public DownloadPage()
         {
             this.InitializeComponent();
+
             SettingsPane.GetForCurrentView().CommandsRequested += onCommandsRequested;
             this.itemListView.ItemsSource = torrents;
             ServerCommunicator.Instance.TorrentInfoReceived += TorrentReceived;
             ServerCommunicator.Instance.StartListening();
 
-            //AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            //AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
-            //AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+            AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+
         }
 
         private void TorrentReceived(TorrentInfo ti)
@@ -321,7 +346,7 @@ namespace MetroTorrent.Pages
                            EdgeTransitionLocation.Right :
                            EdgeTransitionLocation.Left
                 });
-
+                
                 ConnectionSettings mypane = new ConnectionSettings();
                 mypane.Width = settingsWidth;
                 mypane.Height = Window.Current.Bounds.Height;
@@ -432,7 +457,6 @@ namespace MetroTorrent.Pages
                 }
             }
         }
-
     }
 
 }
