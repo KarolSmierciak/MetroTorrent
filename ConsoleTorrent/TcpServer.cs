@@ -116,8 +116,8 @@
                             Name = torrentManager.Torrent.Name,
                             Peers = torrentManager.Peers.Leechs,
                             Seeds = torrentManager.Peers.Seeds,
-                            UploadSpeed = torrentManager.Monitor.UploadSpeed,
-                            DownloadSpeed = torrentManager.Monitor.DownloadSpeed,
+                            UploadSpeed = torrentManager.Monitor.UploadSpeed / 1024,
+                            DownloadSpeed = torrentManager.Monitor.DownloadSpeed / 1024,
                             Progress = torrentManager.Progress,
                             ETA = this.CalculateSpeed(torrentManager)
                         };
