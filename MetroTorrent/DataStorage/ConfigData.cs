@@ -77,7 +77,7 @@ namespace MetroTorrent.DataStorage
                 if (OnFirstRun != null)
                     OnFirstRun();
             }
-            ApplyPermissions();
+            //ApplyPermissions();
         }
 
         ConfigData()
