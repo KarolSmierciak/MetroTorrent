@@ -121,9 +121,6 @@
     <Compile Include="Pages\DownloadPage.xaml.cs">
       <DependentUpon>DownloadPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\DownloadsPage.xaml.cs">
-      <DependentUpon>DownloadsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\FirstRunConfiguration.xaml.cs">
       <DependentUpon>FirstRunConfiguration.xaml</DependentUpon>
     </Compile>
@@ -159,10 +156,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\DownloadPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\DownloadsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

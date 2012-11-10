@@ -41,6 +41,7 @@ namespace MetroTorrent.Pages
         public DownloadPage()
         {
             this.InitializeComponent();
+
             SettingsPane.GetForCurrentView().CommandsRequested += onCommandsRequested;
             this.itemListView.ItemsSource = torrents;
 
@@ -70,6 +71,7 @@ namespace MetroTorrent.Pages
             AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
             AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
             AddTorrent(new TorrentData("aaaaaaaaaaaaaaaa"));
+
         }
 
         #region Page state management
@@ -282,7 +284,7 @@ namespace MetroTorrent.Pages
                            EdgeTransitionLocation.Right :
                            EdgeTransitionLocation.Left
                 });
-
+                
                 ConnectionSettings mypane = new ConnectionSettings();
                 mypane.Width = settingsWidth;
                 mypane.Height = Window.Current.Bounds.Height;
@@ -340,6 +342,7 @@ namespace MetroTorrent.Pages
         {
             torrents.Add(torrent);
         }
+
 
     }
 
