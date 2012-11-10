@@ -14,9 +14,17 @@
         /// <param name="args">Arguments for the application.</param>
         static void Main(string[] args)
         {
-            List<TorrentManager> torrents = new List<TorrentManager>();
-            TorrentListSender sender = new TorrentListSender(torrents);
-            Serializator.Serialize(sender);
+            int port;
+            TcpServer server;
+            if (args.Length > 1 && int.TryParse(args[1], out port))
+            {
+                server = new TcpServer(port);
+            }
+            else
+            {
+                server = new TcpServer();
+            }
+            server.Initialize();
         }
     }
 }
