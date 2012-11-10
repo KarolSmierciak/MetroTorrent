@@ -15,9 +15,14 @@
     /// <summary>
     /// Represents a MetroTorrent client.
     /// </summary>
-    class MetroClient
+    public class TorrentsData
     {
         /* Fields */
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public TorrentSettings torrentDefaults;
 
         /// <summary>
         /// Base directory for the application.
@@ -60,28 +65,28 @@
         private ClientEngine clientEngine;
 
         /// <summary>
-        /// 
+        /// Collection of loaded torrents.
         /// </summary>
         private List<TorrentManager> torrentManagers;
 
         /// <summary>
         /// Collection of top ten trackers.
         /// </summary>
-        private TopListeners topListeners;
+        private TopListeners topTrackers;
 
         /* Constructor */
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MetroClient" /> class.
+        /// Initializes a new instance of the <see cref="TorrentsData" /> class.
         /// </summary>
-        public MetroClient()
+        public TorrentsData()
         {
             this.baseDir = Environment.CurrentDirectory;
             this.GetValues(out this.torrentsDir, out this.downloadDir, out this.uploadSpeed, out this.downloadSpeed);
             this.fastResumeFile = Path.Combine(this.torrentsDir, "fastresume.data");
             this.dhtNodeFile = Path.Combine(this.baseDir, "DhtNodes");
             this.torrentManagers = new List<TorrentManager>();
-            this.topListeners = new TopListeners(10);
+            this.topTrackers = new TopListeners(10);
 
             Console.CancelKeyPress += delegate { this.Shutdown(); };
             AppDomain.CurrentDomain.ProcessExit += delegate { this.Shutdown(); };
@@ -89,10 +94,37 @@
             Thread.GetDomain().UnhandledException += delegate(object sender, UnhandledExceptionEventArgs e) { Console.WriteLine(e.ExceptionObject); this.Shutdown(); };
 
             this.InitializeEngine();
+            this.torrentDefaults = new TorrentSettings(4, 150, this.downloadSpeed, this.uploadSpeed);
         }
 
         /* Properties */
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DownloadDir
+        {
+            get { return this.downloadDir; }
+            set { this.downloadDir = value; }
+        }
+
+        /// <summary>
+        /// Gets the collection of loaded torrents.
+        /// </summary>
+        public List<TorrentManager> TorrentManagers
+        {
+            get { return this.torrentManagers; }
+            private set { this.torrentManagers = value; }
+        }
+
+        /// <summary>
+        /// Gets the top trackers.
+        /// </summary>
+        public TopListeners TopTrackers
+        {
+            get { return this.topTrackers; }
+            private set { this.topTrackers = value; }
+        }
 
         /* Methods */
 
@@ -154,14 +186,11 @@
             int port = 60606;
             Torrent torrent;
 
-
             EngineSettings engineSettings = new EngineSettings(downloadDir, port)
             {
                 PreferEncryption = false,
                 AllowedEncryption = MonoTorrent.Client.Encryption.EncryptionTypes.All
             };
-
-            TorrentSettings torrentDefaults = new TorrentSettings(4, 150, this.downloadSpeed, this.uploadSpeed);
 
             this.clientEngine = new ClientEngine(engineSettings);
 
@@ -236,7 +265,7 @@
                     postProcessManager.PeersFound += new EventHandler<PeersAddedEventArgs>(this.manager_PeersFound);
                 }
             }
-
+            /*
             // If we loaded no torrents, just exit. The user can put files in the torrents directory and start the client again.
             if (torrentManagers.Count == 0)
             {
@@ -244,16 +273,16 @@
                 this.clientEngine.Dispose();
                 return;
             }
-
+            */
             // For each torrent manager we loaded and stored in our list, hook into the events in the torrent manager and start the engine.
             foreach (TorrentManager torrentManager in this.torrentManagers)
             {
                 // Every time a piece is hashed, this is fired.
                 torrentManager.PieceHashed += delegate(object o, PieceHashedEventArgs e)
                 {
-                    lock (this.topListeners)
+                    lock (this.topTrackers)
                     {
-                        topListeners.WriteLine(string.Format("Piece hashed: {0} - {1} ", e.PieceIndex, e.HashPassed ? "passed" : "failed"));
+                        topTrackers.WriteLine(string.Format("Piece hashed: {0} - {1} ", e.PieceIndex, e.HashPassed ? "passed" : "failed"));
                     }
                 };
 
@@ -265,7 +294,7 @@
                     {
                         tracker.AnnounceComplete += delegate(object sender, AnnounceResponseEventArgs e)
                         {
-                            this.topListeners.WriteLine(string.Format("{0}: {1}", e.Successful, e.Tracker.ToString()));
+                            this.topTrackers.WriteLine(string.Format("{0}: {1}", e.Successful, e.Tracker.ToString()));
                         };
                     }
                 }
@@ -277,14 +306,22 @@
             Thread.Sleep(500);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void manager_PeersFound(object sender, PeersAddedEventArgs e)
         {
-            lock (this.topListeners)
+            lock (this.topTrackers)
             {
-                this.topListeners.WriteLine(string.Format("Found {0} new peers and {1} existing peers.", e.NewPeers, e.ExistingPeers));
+                this.topTrackers.WriteLine(string.Format("Found {0} new peers and {1} existing peers.", e.NewPeers, e.ExistingPeers));
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void ChangeListenEndPoint()
         {
         }

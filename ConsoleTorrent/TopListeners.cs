@@ -5,7 +5,7 @@
     using System.IO;
 
     /// <summary>
-    /// Represents a collection of the ten best trackers.
+    /// Represents a collection of the best trackers.
     /// </summary>
     public class TopListeners : TraceListener
     {

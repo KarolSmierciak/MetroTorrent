@@ -1,12 +1,15 @@
 ﻿namespace ConsoleTorrent
 {
+    using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Net;
     using System.Net.Sockets;
     using System.Text;
     using System.Threading;
     using Commons;
-    using System.Collections.Generic;
+    using MonoTorrent.Client;
+    using MonoTorrent.Common;
 
     /// <summary>
     /// Represents a TCP server - back-end for MetroTorrent application.
@@ -15,17 +18,46 @@
     {
         /* Fields */
 
-        public delegate void TorrentAddedHandler(string path);
+        /// <summary>
+        /// Called by TorrentAdded event with a directory to the torrent file to be loaded.
+        /// </summary>
+        /// <param name="torrentDir"></param>
+        public delegate void TorrentAddedHandler(string torrentDir);
+
+        /// <summary>
+        /// Fires everytime a torrent is added to the list.
+        /// </summary>
         public event TorrentAddedHandler TorrentAdded;
 
-        public delegate void TorrentRemovedHanlder(string path);
-        public event TorrentRemovedHanlder TorrentRemoved;
+        /// <summary>
+        /// Called by TorrentRemoved with a name to the torrent file to be removed.
+        /// </summary>
+        /// <param name="torrentName"></param>
+        public delegate void TorrentRemovedHandler(string torrentName);
 
+        /// <summary>
+        /// Fires everytime a torrent is deleted from the list.
+        /// </summary>
+        public event TorrentRemovedHandler TorrentRemoved;
+
+        /// <summary>
+        /// Port at which to listen.
+        /// </summary>
+        private int port;
+
+        /// <summary>
+        /// MetroTorrent client representation.
+        /// </summary>
+        private TorrentsData torrentClient;
 
         /// <summary>
         /// TcpListener object - core of the TcpServer class.
         /// </summary>
         private TcpListener tcpListener;
+
+        /// <summary>
+        /// 
+        /// </summary>
         private TcpListener queryListener;
 
         /// <summary>
@@ -45,69 +77,112 @@
         /// </summary>
         public TcpServer(int port = 60606)
         {
+            this.port = port;
+            torrentClient = new TorrentsData();
 
+            this.TorrentAdded += AddTorrent;
+            this.TorrentRemoved += RemoveTorrent;
         }
 
+        /* Properties */
+
+        /* Methods */
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void Initialize()
         {
-            tcpListener = new TcpListener(IPAddress.Any, 60606);
+            tcpListener = new TcpListener(IPAddress.Any, port);
             this.tcpListener.Start();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Listen()
         {
             while (true)
             {
-                this.tcpClient = this.tcpListener.AcceptTcpClient();
-                //System.Console.WriteLine("Client connected");
-                try
+                foreach (TorrentManager torrentManager in this.torrentClient.TorrentManagers)
                 {
-                    TorrentInfo torrentInfo = new TorrentInfo()
+                    this.tcpClient = this.tcpListener.AcceptTcpClient();
+                    // System.Console.WriteLine("Client connected");
+                    try
                     {
-                        Name = "torrentName",
-                        Peers = 2,
-                        Seeds = 3,
-                        DownloadSpeed = 10
-                    };
-                    var tcpStream = this.tcpClient.GetStream();
-                    string update = Serializer.Serialize(torrentInfo);
-                    byte[] byteArray = Encoding.UTF8.GetBytes(update);
-                    tcpStream.Write(byteArray, 0, byteArray.Length);
-                    tcpClient.Close();
+                        TorrentInfo torrentInfo = new TorrentInfo()
+                        {
+                            Files = torrentManager.Torrent.Files.Select<TorrentFile, string>(torrentFile => torrentFile.Path).ToList(),
+                            Name = torrentManager.Torrent.Name,
+                            Peers = torrentManager.Peers.Leechs,
+                            Seeds = torrentManager.Peers.Seeds,
+                            UploadSpeed = torrentManager.Monitor.UploadSpeed,
+                            DownloadSpeed = torrentManager.Monitor.DownloadSpeed,
+                            Progress = torrentManager.Progress,
+                            ETA = (torrentManager.Complete
+                            ? torrentManager.Torrent.Size / torrentManager.Monitor.DownloadSpeed
+                            : torrentManager.Torrent.Size / torrentManager.Monitor.UploadSpeed).ToString() + " sec"
+                        };
 
-                    Thread.Sleep(1000);
-                }
-                catch
-                {
-                    //return;
+                        var tcpStream = this.tcpClient.GetStream();
+                        string update = Serializer.Serialize(torrentInfo);
+                        byte[] byteArray = Encoding.UTF8.GetBytes(update);
+                        tcpStream.Write(byteArray, 0, byteArray.Length);
+                        tcpClient.Close();
+
+                        // Thread.Sleep(1000);
+                    }
+                    catch
+                    {
+                        // return;
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void ListenToQueries()
         {
-            queryListener = new TcpListener(IPAddress.Any, 60607);
+            this.queryListener = new TcpListener(IPAddress.Any, 60607);
             this.queryListener.Start();
-            queryThread = new Thread(new ThreadStart(ProcessQueries));
-            queryThread.Start();
+            this.queryThread = new Thread(new ThreadStart(ProcessQueries));
+            this.queryThread.Start();
         }
 
+        private void AddTorrent(string torrentDir)
+        {
+            this.torrentClient.TorrentManagers.Add(
+                new TorrentManager(Torrent.Load(torrentDir), 
+                    this.torrentClient.DownloadDir, 
+                    this.torrentClient.torrentDefaults)); 
+        }
+
+        private void RemoveTorrent(string torrentName)
+        {
+            this.torrentClient.TorrentManagers.RemoveAll(torrentManager => torrentManager.Torrent.Name == torrentName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         private void ProcessQueries()
         {
             while (true)
             {
-                var Client = this.queryListener.AcceptTcpClient();
+                TcpClient tcpClient = this.queryListener.AcceptTcpClient();
                 try
                 {
-                    var tcpStream = Client.GetStream();
+                    NetworkStream tcpStream = tcpClient.GetStream();
                     byte[] byteArray = new byte[1024];
                     int read = tcpStream.Read(byteArray, 0, byteArray.Length);
                     if (read > 0)
                     {
                         string temp = Encoding.Default.GetString(byteArray);
-                        ProcessQuery(tcpStream, temp);
+                        this.ProcessQuery(tcpStream, temp);
                     }
-                    tcpClient.Close();
+                    this.tcpClient.Close();
                 }
                 catch
                 {
@@ -115,6 +190,11 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="str"></param>
         private void ProcessQuery(NetworkStream stream, string str)
         {
             System.Console.WriteLine(str);
@@ -133,6 +213,5 @@
                     break;
             }
         }
-
     }
 }

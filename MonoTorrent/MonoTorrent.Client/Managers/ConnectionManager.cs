@@ -26,24 +26,17 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-
-
-using System;
-using MonoTorrent.Common;
-using System.Net.Sockets;
-using System.Threading;
-using MonoTorrent.Client.Encryption;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Net;
-using MonoTorrent.Client.Messages;
-using MonoTorrent.Client.Connections;
-using MonoTorrent.Client.Messages.FastPeer;
-using MonoTorrent.Client.Messages.Standard;
-using MonoTorrent.Client.Messages.Libtorrent;
-
 namespace MonoTorrent.Client
 {
+    using System;
+    using MonoTorrent.Common;
+    using System.Threading;
+    using MonoTorrent.Client.Encryption;
+    using System.Collections.Generic;
+    using MonoTorrent.Client.Messages;
+    using MonoTorrent.Client.Connections;
+    using MonoTorrent.Client.Messages.Standard;
+
     internal delegate void MessagingCallback(PeerId id);
 
     /// <summary>
@@ -428,6 +421,10 @@ namespace MonoTorrent.Client
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="manager"></param>
         internal void CancelPendingConnects(TorrentManager manager)
         {
             foreach (AsyncConnectState c in pendingConnects)
@@ -495,8 +492,12 @@ namespace MonoTorrent.Client
             }
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="successful"></param>
+        /// <param name="message"></param>
+        /// <param name="state"></param>
         private void MessageReceived (bool successful, PeerMessage message, object state)
         {
             PeerId id = (PeerId) state;
@@ -522,6 +523,9 @@ namespace MonoTorrent.Client
             }
         }
 
+        /// <summary>
+        ///
+        /// </summary>
         /// <param name="id">The peer whose message queue you want to start processing</param>
         internal void ProcessQueue(PeerId id)
         {
@@ -556,6 +560,10 @@ namespace MonoTorrent.Client
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         internal void RaisePeerMessageTransferred(PeerMessageEventArgs e)
         {
             if (PeerMessageTransferred == null)
@@ -584,6 +592,11 @@ namespace MonoTorrent.Client
             });
         }
 
+        /// <summary>
+        /// Returns a value indicating whether a specific peer should be banned.
+        /// </summary>
+        /// <param name="peer">A peer candidate for a ban.</param>
+        /// <returns>True if banned successfully, false if not.</returns>
         internal bool ShouldBanPeer(Peer peer)
         {
             if (BanPeer == null)
@@ -594,6 +607,9 @@ namespace MonoTorrent.Client
             return e.BanPeer;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         internal void TryConnect()
         {
             TorrentManager m = null;
@@ -613,6 +629,11 @@ namespace MonoTorrent.Client
             }
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <returns></returns>
         bool TryConnect (TorrentManager manager)
         {
             int i;
