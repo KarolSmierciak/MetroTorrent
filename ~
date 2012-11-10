@@ -1,0 +1,13 @@
+Merge branch 'ConsoleApp' of github.com:aleksandersmierciak/MetroTorrent into ConsoleApp
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch ConsoleApp
+# Your branch and 'origin/ConsoleApp' have diverged,
+# and have 1 and 1 different commit each, respectively.
+#
+# Changes to be committed:
+#   (use "git reset HEAD^1 <file>..." to unstage)
+#
+#	modified:   ConsoleTorrent/TcpServer.cs
+#
