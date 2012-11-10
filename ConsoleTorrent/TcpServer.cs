@@ -104,7 +104,7 @@
         {
             while (true)
             {
-                foreach (TorrentManager torrentManager in this.torrentClient.TorrentManagers)
+                foreach (TorrentManager torrentManager in this.torrentClient.TorrentManagers.ToList())
                 {
                     this.tcpClient = this.tcpListener.AcceptTcpClient();
                     // System.Console.WriteLine("Client connected");
@@ -119,9 +119,7 @@
                             UploadSpeed = torrentManager.Monitor.UploadSpeed,
                             DownloadSpeed = torrentManager.Monitor.DownloadSpeed,
                             Progress = torrentManager.Progress,
-                            ETA = (torrentManager.Complete
-                            ? torrentManager.Torrent.Size / torrentManager.Monitor.DownloadSpeed
-                            : torrentManager.Torrent.Size / torrentManager.Monitor.UploadSpeed).ToString() + " sec"
+                            ETA = this.CalculateSpeed(torrentManager)
                         };
 
                         var tcpStream = this.tcpClient.GetStream();
@@ -130,7 +128,7 @@
                         tcpStream.Write(byteArray, 0, byteArray.Length);
                         tcpClient.Close();
 
-                        // Thread.Sleep(1000);
+                        Thread.Sleep(1000);
                     }
                     catch
                     {
@@ -153,10 +151,7 @@
 
         private void AddTorrent(string torrentDir)
         {
-            this.torrentClient.TorrentManagers.Add(
-                new TorrentManager(Torrent.Load(torrentDir), 
-                    this.torrentClient.DownloadDir, 
-                    this.torrentClient.torrentDefaults)); 
+            this.torrentClient.InitializeTorrent(torrentDir);
         }
 
         private void RemoveTorrent(string torrentName)
@@ -198,8 +193,9 @@
         private void ProcessQuery(NetworkStream stream, string str)
         {
             System.Console.WriteLine(str);
-            string id = str.Substring(0, 1);
-            string path = str.Substring(1);
+            string id = str.Substring(0, 1).Trim();
+            string path = str.Substring(1).Replace("\0", string.Empty);
+            Debug.WriteLine("{0} {1}", id, id.Length);
 
             switch (id)
             {
@@ -212,6 +208,26 @@
                         TorrentRemoved(path);
                     break;
             }
+        }
+
+        private string CalculateSpeed(TorrentManager torrentManager)
+        {
+            string Return = string.Empty;
+            if (torrentManager.Complete)
+            {
+                if (torrentManager.Monitor.DownloadSpeed != 0)
+                {
+                    Return = (torrentManager.Torrent.Size / torrentManager.Monitor.DownloadSpeed).ToString() + " sec";
+                }
+            }
+            else
+            {
+                if (torrentManager.Monitor.UploadSpeed != 0)
+                {
+                    Return = (torrentManager.Torrent.Size / torrentManager.Monitor.UploadSpeed).ToString() + " sec";
+                }
+            }
+            return Return;
         }
     }
 }

@@ -35,7 +35,7 @@
         private string downloadDir;
 
         /// <summary>
-        /// Directory for new (incomplete) downloads.
+        /// Directory for torrent files.
         /// </summary>
         private string torrentsDir;
 
@@ -140,10 +140,10 @@
                 using (StreamReader sr = new StreamReader(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "metroconfig.dat")))
                 {
                     String[] line = sr.ReadToEnd().Split('\n');
-                    torrentsDir = line[0];
-                    downloadDir = line[1];
-                    int.TryParse(line[3], out uploadSpeed);
-                    int.TryParse(line[4], out downloadSpeed);
+                    torrentsDir = line[0].Trim();
+                    downloadDir = line[1].Trim();
+                    int.TryParse(line[3].Trim(), out uploadSpeed);
+                    int.TryParse(line[4].Trim(), out downloadSpeed);
                     // The file contained download/upload speeds in kilobytes, multiply by 1024.
                     uploadSpeed *= 1024;
                     downloadSpeed *= 1024;
@@ -184,7 +184,6 @@
         private void InitializeEngine()
         {
             int port = 60606;
-            Torrent torrent;
 
             EngineSettings engineSettings = new EngineSettings(downloadDir, port)
             {
@@ -221,6 +220,10 @@
                 Directory.CreateDirectory(this.clientEngine.Settings.SavePath);
             }
 
+        }
+
+        public void InitializeTorrent(string torrentDir)
+        {
             BEncodedDictionary fastResume;
             try
             {
@@ -231,49 +234,40 @@
                 fastResume = new BEncodedDictionary();
             }
 
-            // For each file in the torrents path that is a .torrent file, load it into the engine.
-            foreach (string file in Directory.GetFiles(this.torrentsDir))
+            Torrent torrent = null;
+
+            // Load the file into the engine if it ends with .torrent.
+
+            if (torrentDir.EndsWith(".torrent"))
             {
-                // Should be checking file MIME type, perhaps?
-                if (file.EndsWith(".torrent"))
+                try
                 {
-                    try
-                    {
-                        // Load the .torrent file from the file into a Torrent instance
-                        // You can use this to do preprocessing should you need to.
-                        torrent = Torrent.Load(file);
-                        Console.WriteLine(torrent.InfoHash.ToString());
-                    }
-                    catch (Exception e)
-                    {
-                        Console.Write("Could not decode {0}: {1}", file, e.Message);
-                        continue;
-                    }
-
-                    // When any preprocessing has been completed, you create a TorrentManager which you then register with the engine.
-                    TorrentManager postProcessManager = new TorrentManager(torrent, this.downloadDir, torrentDefaults);
-                    if (fastResume.ContainsKey(torrent.InfoHash.ToHex()))
-                    {
-                        postProcessManager.LoadFastResume(new FastResume((BEncodedDictionary)fastResume[torrent.InfoHash.ToHex()]));
-                    }
-
-                    this.clientEngine.Register(postProcessManager);
-
-                    // Store the torrent manager in our list so we can access it later.
-                    this.torrentManagers.Add(postProcessManager);
-
-                    postProcessManager.PeersFound += new EventHandler<PeersAddedEventArgs>(this.manager_PeersFound);
+                    // Load the .torrent file from the file into a Torrent instance
+                    // You can use this to do preprocessing should you need to.
+                    torrent = Torrent.Load(torrentDir);
+                    Console.WriteLine(torrent.InfoHash.ToString());
                 }
+                catch (Exception e)
+                {
+                    Console.Write("Could not decode {0}: {1}", torrentDir, e.Message);
+                    return;
+                }
+
+                // When any preprocessing has been completed, you create a TorrentManager which you then register with the engine.
+                TorrentManager postProcessManager = new TorrentManager(torrent, this.downloadDir, torrentDefaults);
+                if (fastResume.ContainsKey(torrent.InfoHash.ToHex()))
+                {
+                    postProcessManager.LoadFastResume(new FastResume((BEncodedDictionary)fastResume[torrent.InfoHash.ToHex()]));
+                }
+
+                this.clientEngine.Register(postProcessManager);
+
+                // Store the torrent manager in our list so we can access it later.
+                this.torrentManagers.Add(postProcessManager);
+
+                postProcessManager.PeersFound += new EventHandler<PeersAddedEventArgs>(this.manager_PeersFound);
             }
-            /*
-            // If we loaded no torrents, just exit. The user can put files in the torrents directory and start the client again.
-            if (torrentManagers.Count == 0)
-            {
-                Console.WriteLine("No torrents found in the Torrents directory. Exiting...");
-                this.clientEngine.Dispose();
-                return;
-            }
-            */
+
             // For each torrent manager we loaded and stored in our list, hook into the events in the torrent manager and start the engine.
             foreach (TorrentManager torrentManager in this.torrentManagers)
             {
