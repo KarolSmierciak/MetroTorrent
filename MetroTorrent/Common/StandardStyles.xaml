@@ -1003,6 +1003,7 @@
         <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
         <Setter Property="ScrollViewer.VerticalScrollMode" Value="Enabled" />
         <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
+        <Setter Property="Background" Value="Red" />
     </Style>
 
     <!-- Page layout roots typically use entrance animations and a theme-appropriate background color -->
