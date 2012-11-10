@@ -1,0 +1,17 @@
+﻿<UserControl
+    x:Class="MetroTorrent.Controls.TorrentItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MetroTorrent.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="250"
+    d:DesignWidth="200">
+    
+    <StackPanel>
+        <Image HorizontalAlignment="Left" Height="150" VerticalAlignment="Top" Width="200"/>
+        <TextBlock x:Name="TorrentNameBox"/>
+        <ProgressBar x:Name="TorrentProgress" />
+    </StackPanel>
+</UserControl>
