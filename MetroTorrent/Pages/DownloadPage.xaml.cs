@@ -354,7 +354,7 @@ namespace MetroTorrent.Pages
             lock (firststartlock)
             {
                 ConfigData.Instance.OnConfigurationError += ErrorOccured;
-                ConfigData.Instance.OnFirstRun += FirstRunHanlder;
+                ConfigData.Instance.OnFirstRun += FirstRunHandler;
                 if (firststart)
                 {
                     firststart = false;
@@ -371,7 +371,7 @@ namespace MetroTorrent.Pages
 
         //private bool firstTest = true;
 
-        private void FirstRunHanlder()
+        private void FirstRunHandler()
         {
             this.Frame.Navigate(typeof(FirstRunConfiguration));
         }

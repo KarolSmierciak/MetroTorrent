@@ -27,7 +27,7 @@ namespace MetroTorrent.DataStorage
             this.torrentProgress = ti.Progress;
             this.downSpeed = ti.DownloadSpeed;
             this.upSpeed = ti.UploadSpeed;
-            this.eta = ti.ETA;
+            this.ETA = ti.ETA;
             this.peers = ti.Peers;
             this.seeds = ti.Seeds;
         }
@@ -45,6 +45,7 @@ namespace MetroTorrent.DataStorage
                 PropertyChanged(this, new PropertyChangedEventArgs("TorrentProgress"));
                 PropertyChanged(this, new PropertyChangedEventArgs("DownloadSpeed"));
                 PropertyChanged(this, new PropertyChangedEventArgs("UploadSpeed"));
+                PropertyChanged(this, new PropertyChangedEventArgs("ETA"));
             }
         }
 
@@ -155,6 +156,13 @@ namespace MetroTorrent.DataStorage
 
         public string ETA
         {
+            set
+            {
+                eta = value;
+
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("ETA"));
+            }
             get
             {
                 return eta;

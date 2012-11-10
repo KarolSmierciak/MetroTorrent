@@ -29,6 +29,14 @@ namespace MonoTorrent.Client.Connections
 
         public static IConnection Create(Uri connectionUri)
         {
+            // aleksandersmierciak patch begins here
+            // refer to: https://github.com/mono/monotorrent/issues/26
+            if (connectionUri.Scheme == "tcp" && (connectionUri.Port < 1 || connectionUri.Port > 65535))
+            {
+                return null;
+            }
+            // aleksandersmierciak patch ends here
+
             if (connectionUri == null)
                 throw new ArgumentNullException("connectionUrl");
 
