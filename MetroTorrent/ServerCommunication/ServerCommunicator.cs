@@ -13,24 +13,18 @@ namespace MetroTorrent.ServerCommunication
 {
     class ServerCommunicator
     {
-        private static StreamSocket socket = new StreamSocket();
+        private static StreamSocket socket;
         private static HostName hostName;
         private static string port = "60606";
 
         public delegate void TorrentInfoReceinvedHandler(TorrentInfo ti);
         public event TorrentInfoReceinvedHandler TorrentInfoReceived;
 
+        private Queue<string> tosend = new Queue<string>();
+
         private ServerCommunicator()
         {
-            try
-            {
-                hostName = new HostName("localhost");
-            }
-            catch (ArgumentException)
-            {
-                return;
-            }
-            CoreApplication.Properties.Add("clientSocket", socket);
+            
         }
 
         private static ServerCommunicator instance;
@@ -47,7 +41,10 @@ namespace MetroTorrent.ServerCommunication
 
         public void SendMessage(string msg)
         {
-            
+            lock (tosend)
+            {
+                tosend.Enqueue(msg);
+            }
         }
 
         public async void StartListening()
@@ -56,39 +53,48 @@ namespace MetroTorrent.ServerCommunication
             {
                 try
                 {
+                    hostName = new HostName("localhost");
+                }
+                catch (ArgumentException)
+                {
+                    continue;
+                }
+                //CoreApplication.Properties.Add("clientSocket", socket);
+                try
+                {
+                    socket = new StreamSocket();
                     await socket.ConnectAsync(hostName, port);
-                    CoreApplication.Properties.Add("connected", null);
+                    //CoreApplication.Properties.Add("connected", null);
                 }
-                catch (Exception exception)
+                catch
                 {
-                    if (SocketError.GetStatus(exception.HResult) == SocketErrorStatus.Unknown)
+                    continue;
+                }
+                try
+                {
+                    Windows.Storage.Streams.Buffer b = new Windows.Storage.Streams.Buffer(6000);
+                    var xxx = await socket.InputStream.ReadAsync(b, b.Capacity, InputStreamOptions.None);
+                    DataReader dr = DataReader.FromBuffer(b);
+                    string str = dr.ReadString(dr.UnconsumedBufferLength);
+                    if (this.TorrentInfoReceived != null)
                     {
-                        throw;
+                        TorrentInfo ti = Commons.Serializer.Deserialize<TorrentInfo>(str);
+                        TorrentInfoReceived(ti);
                     }
-                    return;
-                }
-
-                Windows.Storage.Streams.Buffer b = new Windows.Storage.Streams.Buffer(6000);
-
-                string str;
-
-                while (true)
-                {
-                    try
+                    /*lock (tosend)
                     {
-                        var xxx = await socket.InputStream.ReadAsync(b, b.Capacity, InputStreamOptions.None);
-                        DataReader dr = DataReader.FromBuffer(b);
-                        str = dr.ReadString(dr.UnconsumedBufferLength);
-                        if (this.TorrentInfoReceived != null)
+                        if (tosend.Count > 0)
                         {
-                            TorrentInfo ti = Commons.Serializer.Deserialize<TorrentInfo>(str);
-                            TorrentInfoReceived(ti);
+                            string s = tosend.Dequeue();
+                            DataWriter dw = new DataWriter(socket.OutputStream);
+                            
+                            dw.WriteString(s);
                         }
-                    }
-                    catch
-                    {
-                        break;
-                    }
+                    }*/
+                }
+                catch
+                {
+                    //break;
                 }
             }
            
