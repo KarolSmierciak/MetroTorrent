@@ -25,6 +25,7 @@
                 server = new TcpServer();
             }
             server.Initialize();
+            server.Listen();
         }
     }
 }
